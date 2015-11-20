@@ -1,7 +1,6 @@
 package ca.alexcomeau.texmobile.blocks;
 
 import java.io.Serializable;
-
 import ca.alexcomeau.texmobile.Coordinate;
 
 public abstract class Block implements Serializable {

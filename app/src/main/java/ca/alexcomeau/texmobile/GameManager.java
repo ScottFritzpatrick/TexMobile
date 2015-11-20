@@ -2,9 +2,7 @@ package ca.alexcomeau.texmobile;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.util.ArrayList;
-
 import ca.alexcomeau.texmobile.blocks.*;
 
 public class GameManager implements Parcelable {

@@ -4,8 +4,6 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 import ca.alexcomeau.texmobile.blocks.Block;
 
 public class Board implements Parcelable {

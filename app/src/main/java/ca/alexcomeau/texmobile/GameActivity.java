@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
