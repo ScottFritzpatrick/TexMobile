@@ -75,8 +75,6 @@ public class GameManager {
                 currentBlock = nextBlock;
                 nextBlock = generateNewBlock();
 
-
-
                 // A new block appearing increases the level by one, unless the level ends in 99 or is the second last
                 if ((level + 1) % 100 == 0 || level == maxLevel - 1)
                     level++;
@@ -89,10 +87,12 @@ public class GameManager {
             droppedLines = 0;
 
             // Manipulate the block according to the user's input.
-            if (movementWait++ >= MOVEMENT_DELAY) {
+            if (movementWait++ >= MOVEMENT_DELAY)
+            {
                 movementWait = 0;
 
-                switch (input) {
+                switch (input)
+                {
                     case "drop":
                         drop();
                         break;
@@ -114,20 +114,26 @@ public class GameManager {
             }
 
             // Check if the block is currently in a state of falling
-            if (gameBoard.checkDown(currentBlock)) {
+            if (gameBoard.checkDown(currentBlock))
+            {
                 lockCurrent = LOCK_DELAY;
                 // Move the block down if enough time has passed
                 if (gravity > 0)
-                    if (fallWait++ >= gravity) {
+                    if (fallWait++ >= gravity)
+                    {
                         fallWait = 0;
                         currentBlock.moveDown();
-                    } else
+                    }
+                    else
                         for (int i = 0; i < superGravity; i++)
                             if (gameBoard.checkDown(currentBlock))
                                 currentBlock.moveDown();
-            } else {
+            }
+            else
+            {
                 // Check if the block needs to be locked
-                if (lockCurrent-- <= 0) {
+                if (lockCurrent-- <= 0)
+                {
                     gameBoard.lockBlock(currentBlock);
                     lockCurrent = LOCK_DELAY;
                     // Check if locking that piece caused any lines to be cleared
@@ -146,7 +152,8 @@ public class GameManager {
         // Count the number of lines the piece falls, but always at least one for scoring purposes
         droppedLines = 1;
 
-        while(gameBoard.checkDown(currentBlock)) {
+        while(gameBoard.checkDown(currentBlock))
+        {
             currentBlock.moveDown();
             droppedLines++;
         }
@@ -252,7 +259,9 @@ public class GameManager {
             int bravo = gameBoard.equals(new Board()) ? 4 : 1;
 
             // Tetris: The Grand Master scoring method
-            score += (Math.ceil((level + linesCleared) / 4) + droppedLines) * linesCleared * ((linesCleared * 2) - 1) * combo * bravo;
+            score += (Math.ceil((level + linesCleared) / 4) + droppedLines)
+                    * linesCleared * ((linesCleared * 2) - 1)
+                    * combo * bravo;
             level += linesCleared;
 
             // The game ends once the max level is reached.
@@ -382,21 +391,8 @@ public class GameManager {
         }
     }
 
-    public int[][] getStack()
-    {
-        return gameBoard.getStack();
-    }
-
-    public Block getCurrentBlock()
-    {
-        return currentBlock;
-    }
-
-    public boolean getRedraw() {
-        return redraw;
-    }
-
-    public void setRedraw(boolean redraw) {
-        this.redraw = redraw;
-    }
+    public int[][] getStack() { return gameBoard.getStack(); }
+    public Block getCurrentBlock() { return currentBlock; }
+    public boolean getRedraw() { return redraw; }
+    public void setRedraw(boolean redraw) { this.redraw = redraw; }
 }

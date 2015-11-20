@@ -36,41 +36,51 @@ public class Board {
     // Returns whether there is room for the given piece to move left
     public boolean checkLeft(Block block)
     {
-        // We can manipulate the block here without affecting the original
+        // Check if it would fit to the left, then move it back.
         block.moveLeft();
-        return checkBlock(block);
+        boolean result = checkBlock(block);
+        block.moveRight();
+        return result;
     }
 
     // Returns whether there is room for the given piece to move right
     public boolean checkRight(Block block)
     {
-        // We can manipulate the block here without affecting the original
+        // Check if it would fit to the right, then move it back.
         block.moveRight();
-        return checkBlock(block);
+        boolean result = checkBlock(block);
+        block.moveLeft();
+        return result;
     }
 
     // Returns whether there is room for the given piece to move down
     public boolean checkDown(Block block)
     {
-        // We can manipulate the block here without affecting the original
+        // Check if it would fit below, then move it back.
         block.moveDown();
-        return checkBlock(block);
+        boolean result = checkBlock(block);
+        block.moveUp();
+        return result;
     }
 
     // Returns whether there is room for the given piece to move down
     public boolean checkRotateRight(Block block)
     {
-        // We can manipulate the block here without affecting the original
+        // Check if it would fit rotated, then put it back.
         block.rotateRight();
-        return checkBlock(block);
+        boolean result = checkBlock(block);
+        block.rotateLeft();
+        return result;
     }
 
     // Returns whether there is room for the given piece to move down
     public boolean checkRotateLeft(Block block)
     {
-        // We can manipulate the block here without affecting the original
+        // Check if it would fit rotated, then put it back.
         block.rotateLeft();
-        return checkBlock(block);
+        boolean result = checkBlock(block);
+        block.rotateRight();
+        return result;
     }
 
     // Returns whether the specified line is filled, and thus can be cleared.

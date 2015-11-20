@@ -15,6 +15,7 @@ public abstract class Block {
         position = start;
     }
 
+    public void moveUp() {position.y++; }
     public void moveDown() { position.y--; }
     public void moveLeft() { position.x--; }
     public void moveRight() { position.x++; }
