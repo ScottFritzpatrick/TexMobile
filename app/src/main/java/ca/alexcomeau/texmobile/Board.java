@@ -1,9 +1,14 @@
 package ca.alexcomeau.texmobile;
 
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 import ca.alexcomeau.texmobile.blocks.Block;
 
-public class Board {
+public class Board implements Parcelable {
     private int[][] stack;
 
     public Board()
@@ -123,4 +128,32 @@ public class Board {
     public int[][] getStack() { return stack; }
 
     public boolean equals(Board other) { return stack.equals(other.getStack()); }
+
+    // ===== Parcelable Stuff ============================
+    protected Board(Parcel in) {
+        stack = (int[][]) in.readSerializable();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(stack);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Board> CREATOR = new Parcelable.Creator<Board>() {
+        @Override
+        public Board createFromParcel(Parcel in) {
+            return new Board(in);
+        }
+
+        @Override
+        public Board[] newArray(int size) {
+            return new Board[size];
+        }
+    };
 }

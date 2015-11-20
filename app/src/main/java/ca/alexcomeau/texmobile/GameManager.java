@@ -1,10 +1,13 @@
 package ca.alexcomeau.texmobile;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 import ca.alexcomeau.texmobile.blocks.*;
 
-public class GameManager {
+public class GameManager implements Parcelable {
     private Block currentBlock, nextBlock;
     private Board gameBoard;
     private int level;
@@ -395,4 +398,72 @@ public class GameManager {
     public Block getCurrentBlock() { return currentBlock; }
     public boolean getRedraw() { return redraw; }
     public void setRedraw(boolean redraw) { this.redraw = redraw; }
+
+    // ===== Parcelable Stuff ============================================
+    protected GameManager(Parcel in) {
+        gameBoard = (Board) in.readValue(Board.class.getClassLoader());
+        currentBlock = (Block) in.readValue(Block.class.getClassLoader());
+        nextBlock = (Block) in.readValue(Block.class.getClassLoader());
+        level = in.readInt();
+        score = in.readInt();
+        lockCurrent = in.readInt();
+        droppedLines = in.readInt();
+        combo = in.readInt();
+        gameOver = in.readByte() != 0x00;
+        spawnWait = in.readInt();
+        fallWait = in.readInt();
+        movementWait = in.readInt();
+        startTimeMS = in.readLong();
+        redraw = in.readByte() != 0x00;
+        grandmasterValid = in.readByte() != 0x00;
+        check1 = in.readByte() != 0x00;
+        check2 = in.readByte() != 0x00;
+        check3 = in.readByte() != 0x00;
+        gravity = in.readInt();
+        superGravity = in.readInt();
+        maxLevel = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(gameBoard);
+        dest.writeValue(currentBlock);
+        dest.writeValue(nextBlock);
+        dest.writeInt(level);
+        dest.writeInt(score);
+        dest.writeInt(lockCurrent);
+        dest.writeInt(droppedLines);
+        dest.writeInt(combo);
+        dest.writeByte((byte) (gameOver ? 0x01 : 0x00));
+        dest.writeInt(spawnWait);
+        dest.writeInt(fallWait);
+        dest.writeInt(movementWait);
+        dest.writeLong(startTimeMS);
+        dest.writeByte((byte) (redraw ? 0x01 : 0x00));
+        dest.writeByte((byte) (grandmasterValid ? 0x01 : 0x00));
+        dest.writeByte((byte) (check1 ? 0x01 : 0x00));
+        dest.writeByte((byte) (check2 ? 0x01 : 0x00));
+        dest.writeByte((byte) (check3 ? 0x01 : 0x00));
+        dest.writeInt(gravity);
+        dest.writeInt(superGravity);
+        dest.writeInt(maxLevel);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<GameManager> CREATOR = new Parcelable.Creator<GameManager>() {
+        @Override
+        public GameManager createFromParcel(Parcel in) {
+            return new GameManager(in);
+        }
+
+        @Override
+        public GameManager[] newArray(int size) {
+            return new GameManager[size];
+        }
+    };
 }

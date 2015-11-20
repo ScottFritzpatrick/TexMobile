@@ -26,12 +26,28 @@ public class GameActivity extends AppCompatActivity {
 
         surfaceView = (SurfaceView) findViewById(R.id.svBoard);
         surfaceHolder = surfaceView.getHolder();
-        game = new GameManager();
         width = 10;
         height = 10;
 
+        if(savedInstanceState == null)
+        {
+            game = new GameManager();
+            Bundle myBundle = getIntent().getExtras();
+            game.start(myBundle.getInt("startLevel"), myBundle.getInt("endLevel"));
+        }
+        else
+        {
+            game = savedInstanceState.getParcelable("game");
+        }
+
         Timer calcTimer = new Timer();
         calcTimer.scheduleAtFixedRate(new GameTask(), 0, 34);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putParcelable("game", game);
     }
 
     private class GameTask extends TimerTask
