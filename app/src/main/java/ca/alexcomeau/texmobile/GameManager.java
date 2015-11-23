@@ -21,20 +21,20 @@ public class GameManager implements Parcelable {
     private boolean grandmasterValid, check1, check2, check3;
     private boolean redraw;
 
-    // The number of frames between each drop
+    // Pieces drop every gravity frames, if gravity > 0.
     private int gravity;
-    // The number of drops per frame, once gravity reaches 1
+    // Pieces drop superGravity rows per frame, if gravity == 0.
     private int superGravity;
     // When the game ends
     private int maxLevel;
 
-    // The number of frames after the block touches the stack before it locks.
+    // Blocks lock in place LOCK_DELAY frames after touching the stack.
     private final int LOCK_DELAY = 15;
     // Where pieces spawn
     private final Coordinate START = new Coordinate(3,17);
-    // How many frames to wait after a piece is locked to spawn a new one.
+    // Pieces are spawned SPAWN_DELAY frames after a piece is locked.
     private final int SPAWN_DELAY = 15;
-    // How many frames to wait between inputs
+    // Inputs are taken every MOVEMENT_DELAY frames.
     private final int MOVEMENT_DELAY = 2;
 
     public GameManager(){ }
@@ -84,7 +84,8 @@ public class GameManager implements Parcelable {
                 downtime = true;
         }
 
-        if(!downtime) {
+        if(!downtime)
+        {
             droppedLines = 0;
 
             // Manipulate the block according to the user's input.
@@ -141,7 +142,6 @@ public class GameManager implements Parcelable {
                     checkClears();
                     currentBlock = null;
                     spawnWait = 0;
-                    return;
                 }
             }
         }
@@ -246,7 +246,7 @@ public class GameManager implements Parcelable {
         {
             if (gameBoard.checkLine(i))
             {
-                // animations here later?
+                // animations later?
                 gameBoard.clearLine(i);
                 linesCleared++;
             }
@@ -399,9 +399,9 @@ public class GameManager implements Parcelable {
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {
-        gameBoard = (Board) in.readValue(Board.class.getClassLoader());
-        currentBlock = (Block) in.readValue(Block.class.getClassLoader());
-        nextBlock = (Block) in.readValue(Block.class.getClassLoader());
+        gameBoard = (Board) in.readParcelable(Board.class.getClassLoader());
+        currentBlock = (Block) in.readSerializable();
+        nextBlock = (Block) in.readSerializable();
         level = in.readInt();
         score = in.readInt();
         lockCurrent = in.readInt();
@@ -429,9 +429,9 @@ public class GameManager implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(gameBoard);
-        dest.writeValue(currentBlock);
-        dest.writeValue(nextBlock);
+        dest.writeParcelable(gameBoard, 0);
+        dest.writeSerializable(currentBlock);
+        dest.writeSerializable(nextBlock);
         dest.writeInt(level);
         dest.writeInt(score);
         dest.writeInt(lockCurrent);
