@@ -1,5 +1,6 @@
 package ca.alexcomeau.texmobile;
 
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,7 +20,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView txtScore, txtLevel;
     private GameManager game;
     // Rectangle width/height in dp
-    private final int SIZE = 10;
+    private int size;
     private float pixels;
     private Timer calcTimer;
 
@@ -33,9 +33,15 @@ public class GameActivity extends AppCompatActivity {
         surfaceHolder = surfaceView.getHolder();
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtLevel = (TextView) findViewById(R.id.txtLevel);
+        size = 20;
+
+        // The game board has to be smaller in landscape
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            size = 16;
+        }
 
         // Convert from dp to pixels
-        pixels = SIZE * getResources().getDisplayMetrics().density;
+        pixels = size * getResources().getDisplayMetrics().density;
 
         if(savedInstanceState == null)
         {
@@ -80,7 +86,6 @@ public class GameActivity extends AppCompatActivity {
         int[][] colors = game.getStack();
         int countRow, countColumn;
         countRow = 0;
-
 
         // Paint the stack onto the canvas
         for(int[] row : colors)
@@ -132,7 +137,7 @@ public class GameActivity extends AppCompatActivity {
             gameOver(game.getGameOver());
         }
     }
-    
+
     private void gameOver(Boolean result)
     {
         //// TODO: 11/24/2015 Add game over handling 
