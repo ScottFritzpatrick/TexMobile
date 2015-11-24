@@ -1,11 +1,15 @@
 package ca.alexcomeau.texmobile;
 
+import android.app.ActionBar;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
@@ -20,7 +24,6 @@ public class GameActivity extends AppCompatActivity {
     private TextView txtScore, txtLevel;
     private GameManager game;
     // Rectangle width/height in dp
-    private int size;
     private float pixels;
     private Timer calcTimer;
 
@@ -33,15 +36,24 @@ public class GameActivity extends AppCompatActivity {
         surfaceHolder = surfaceView.getHolder();
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtLevel = (TextView) findViewById(R.id.txtLevel);
-        size = 20;
 
-        // The game board has to be smaller in landscape
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            size = 16;
-        }
+        // Make the canvas fill the screen
+        Display display = getWindowManager().getDefaultDisplay();
+        Point dimens = new Point();
+        display.getSize(dimens);
+        int screenheight = dimens.y;
+        double h, w;
 
+        if(display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
+            h = screenheight * 0.7;
+        else
+            h = screenheight * 0.9;
+
+        w = h * 0.5;
+        surfaceView.setLayoutParams(new android.widget.FrameLayout.LayoutParams((int) w, (int) h));
+        
         // Convert from dp to pixels
-        pixels = size * getResources().getDisplayMetrics().density;
+        pixels = (int)(h / 20) * getResources().getDisplayMetrics().density;
 
         if(savedInstanceState == null)
         {
@@ -90,19 +102,24 @@ public class GameActivity extends AppCompatActivity {
         // Paint the stack onto the canvas
         for(int[] row : colors)
         {
-            countColumn = 0;
-            for (int i : row) {
-                // The canvas is already black so we don't have to draw those boxes
-                if(i != Color.BLACK)
+            // The first two rows aren't displayed
+            if(countRow > 1)
+            {
+                countColumn = 0;
+                for (int i : row)
                 {
-                    paint.setColor(i);
-                    canvas.drawRect(countColumn * pixels, // Left
-                            canvas.getHeight() - (countRow * pixels) - pixels, // Top
-                            (countColumn * pixels) + pixels, // Right
-                            canvas.getHeight() - (countRow * pixels), // Bottom
-                            paint);
-                    // Next one over
-                    countColumn++;
+                    // The canvas is already black so we don't have to draw those boxes
+                    if (i != Color.BLACK)
+                    {
+                        paint.setColor(i);
+                        canvas.drawRect(countColumn * pixels, // Left
+                                        canvas.getHeight() - (countRow * pixels) - pixels, // Top
+                                        (countColumn * pixels) + pixels, // Right
+                                        canvas.getHeight() - (countRow * pixels), // Bottom
+                                        paint);
+                        // Next one over
+                        countColumn++;
+                    }
                 }
             }
             countRow++;
