@@ -4,38 +4,94 @@
     android:layout_height="match_parent"
     android:theme="@android:style/Theme.NoTitleBar">
 
-    <SurfaceView
-        android:layout_width="200dp"
-        android:layout_height="440dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp"
-        android:id="@+id/svBoard" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <SurfaceView
+            android:layout_width="200dp"
+            android:layout_height="440dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:id="@+id/svBoard" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/next"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgNext"
+                android:contentDescription="@string/next"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/score"
+                android:textSize="16sp"
+                android:layout_marginTop="50dp"
+                android:id="@+id/txtScore"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/level"
+                android:textSize="16sp"
+                android:layout_marginTop="50dp"
+                android:id="@+id/txtLevel"/>
+        </LinearLayout>
+    </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        style="?android:buttonBarStyle">
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/moveLeft"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/btnMoveLeft"
+            style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/rotateLeft"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/btnRotateLeft"
+            style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/drop"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/btnDrop1"
+            style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/rotateRight"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/btnRotateRight"
+            style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/moveRight"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/btnMoveRight"
+            style="?android:buttonBarButtonStyle"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/btnDrop2"/>
     </LinearLayout>
 
 </LinearLayout>

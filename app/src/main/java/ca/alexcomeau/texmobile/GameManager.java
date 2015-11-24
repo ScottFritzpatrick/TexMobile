@@ -13,7 +13,7 @@ public class GameManager implements Parcelable {
     private int lockCurrent;
     private int droppedLines;
     private int combo;
-    private boolean gameOver;
+    private Boolean gameOver;
     private int spawnWait;
     private int fallWait;
     private int movementWait;
@@ -51,7 +51,7 @@ public class GameManager implements Parcelable {
         movementWait = 0;
         addLevel(levelStart);
         combo = 1;
-        gameOver = false;
+        gameOver = null;
         nextBlock = generateNewBlock();
         startTimeMS = System.currentTimeMillis();
 
@@ -75,6 +75,15 @@ public class GameManager implements Parcelable {
             {
                 currentBlock = nextBlock;
                 nextBlock = generateNewBlock();
+                redraw = true;
+
+                // If the new block isn't in a valid location, the game is lost
+                if(!gameBoard.checkBlock(currentBlock))
+                    gameOver = false;
+
+                fallWait = 0;
+                // Let them move on the frame it appears
+                movementWait = MOVEMENT_DELAY;
 
                 // A new block appearing increases the level by one, unless the level ends in 99 or is the second last
                 if ((level + 1) % 100 == 0 || level == maxLevel - 1)
@@ -278,7 +287,7 @@ public class GameManager implements Parcelable {
                     }
                     check3 = false;
                 }
-                gameOver(true);
+                gameOver = true;
             }
             redraw = true;
         }
@@ -305,14 +314,6 @@ public class GameManager implements Parcelable {
             default:
                 return new BlockZ(START);
         }
-    }
-
-    // Handling the game being won or lost
-    private void gameOver(boolean win)
-    {
-        gameOver = true;
-        if(!win)
-            grandmasterValid = false;
     }
 
     private void addLevel(int toAdd)
@@ -375,7 +376,7 @@ public class GameManager implements Parcelable {
             superGravity = 4;
         else if(level < 500)
             superGravity = 3;
-        else
+        else if(level < 999)
         {
             superGravity = 20;
             // Another checkpoint. Score >= 40000 Time <= 7m30s
@@ -393,6 +394,10 @@ public class GameManager implements Parcelable {
     }
 
     public int[][] getStack() { return gameBoard.getStack(); }
+    public int getLevel() { return level; }
+    public int getMaxLevel() { return maxLevel; }
+    public int getScore() { return score; }
+    public Boolean getGameOver() { return gameOver; }
     public Block getCurrentBlock() { return currentBlock; }
     public boolean getRedraw() { return redraw; }
     public void setRedraw(boolean redraw) { this.redraw = redraw; }

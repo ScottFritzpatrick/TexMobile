@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="score">Score\n %1$d</string>
+    <string name="level">Level\n <u>%1$d</u>\n%2$d</string>
+    <string name="next">Next Block</string>
 </resources>
