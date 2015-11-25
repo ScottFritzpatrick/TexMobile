@@ -16,7 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import ca.alexcomeau.texmobile.blocks.Block;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private TextView txtScore, txtLevel;
@@ -48,7 +48,7 @@ public class GameActivity extends AppCompatActivity {
             h = screenheight * 0.9;
 
         w = h * 0.5;
-        surfaceView.setLayoutParams(new android.widget.FrameLayout.LayoutParams((int) w, (int) h));
+        surfaceView.setLayoutParams(new android.widget.LinearLayout.LayoutParams((int) w, (int) h));
         
         // Convert from dp to pixels
         pixels = (int)(h / 20) * getResources().getDisplayMetrics().density;
@@ -63,10 +63,19 @@ public class GameActivity extends AppCompatActivity {
         {
             game = savedInstanceState.getParcelable("game");
         }
+    }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder)
+    {
         calcTimer = new Timer();
         calcTimer.scheduleAtFixedRate(new GameTask(), 0, 34);
     }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { }
+
+    public void surfaceDestroyed(SurfaceHolder holder){}
 
     @Override
     public void onSaveInstanceState(Bundle outState)
@@ -91,7 +100,7 @@ public class GameActivity extends AppCompatActivity {
     {
         Canvas canvas = surfaceHolder.lockCanvas();
         // Fill the canvas with black
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.BLUE);
         Paint paint = new Paint();
         int[][] colors = game.getStack();
         int countRow, countColumn;

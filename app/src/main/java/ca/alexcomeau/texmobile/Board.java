@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 import ca.alexcomeau.texmobile.blocks.Block;
 
 
@@ -26,7 +28,9 @@ public class Board implements Parcelable {
     // Checks whether the block is currently in a legal position.
     public boolean checkBlock(Block block)
     {
-        for(Point c : block.getAbsoluteCoordinates())
+        Point[] coords = block.getAbsoluteCoordinates();
+
+        for(Point c : coords)
         {
             if(c.y == -1 || c.x == -1 || c.x == stack[0].length)
                 return false;

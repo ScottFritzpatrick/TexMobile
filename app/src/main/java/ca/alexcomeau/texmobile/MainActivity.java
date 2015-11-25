@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void btnClick(View v)
     {
-        Intent intent = new Intent("ca.alexcomeau.texmobile.GameActivity");
+        Intent intent = new Intent("ca.alexcomeau.texmobile.Game");
         //TODO: Add a drop down or something to select the starting level.
         intent.putExtra("startLevel", 0);
         intent.putExtra("maxLevel", Integer.parseInt(v.getTag().toString()));

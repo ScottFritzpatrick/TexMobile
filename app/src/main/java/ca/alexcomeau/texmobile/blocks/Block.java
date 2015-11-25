@@ -1,6 +1,8 @@
 package ca.alexcomeau.texmobile.blocks;
 
 import android.graphics.Point;
+import android.util.Log;
+
 import java.io.Serializable;
 
 public abstract class Block implements Serializable {
@@ -32,10 +34,12 @@ public abstract class Block implements Serializable {
     // Adds the position to the current relative coordinates and returns that.
     public Point[] getAbsoluteCoordinates()
     {
-        Point[] coords = getRelativeCoordinates();
-        for(Point c : coords) {
-            c.offset(position.x, position.y);
-        }
+        Point[] relative = getRelativeCoordinates();
+        Point[] coords = new Point[relative.length];
+
+        for(int i = 0; i < relative.length; i++)
+            coords[i] = new Point(relative[i].x + position.x, relative[i].y + position.y);
+
         return coords;
     }
 

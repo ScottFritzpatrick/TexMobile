@@ -21,7 +21,7 @@ public class DatabaseBundler {
     {
         try {
             // build the full path to the database in the databases folder (where our db goes!)
-            String destPath = "/data/data/" + packageName + "/databases/" + dbName;
+            String destPath = baseContext.getFilesDir().getPath() + packageName + "/databases/" + dbName;
             // construct a file object
             File f = new File(destPath);
 
@@ -29,7 +29,7 @@ public class DatabaseBundler {
                 // we have to bundle the database with app - first run!
 
                 // manually make the databases folder
-                File directory = new File("/data/data/" + packageName + "/databases");
+                File directory = new File(baseContext.getFilesDir().getPath() + packageName + "/databases");
                 directory.mkdir();
 
                 copyDB(baseContext.getAssets().open(dbName), new FileOutputStream(destPath));
