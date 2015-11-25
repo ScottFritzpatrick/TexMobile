@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enterName"
-        android:labelFor="@id/txtName"/>
+        android:labelFor="@+id/txtName"/>
 
     <EditText
         android:layout_width="160dp"
@@ -29,5 +29,11 @@
         android:inputType="text"
         android:maxLength="8"
         android:hint="@string/hint"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter"
+        android:onClick="btnEnterClick"/>
 
 </LinearLayout>

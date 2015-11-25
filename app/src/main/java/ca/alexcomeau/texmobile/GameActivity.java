@@ -14,7 +14,6 @@ import android.view.SurfaceView;
 import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import ca.alexcomeau.texmobile.blocks.Block;
 
 public class GameActivity extends AppCompatActivity {
@@ -156,32 +155,41 @@ public class GameActivity extends AppCompatActivity {
 
     private void gameOver(Boolean result)
     {
+        // If they won the game...
         if(result)
         {
-            HighScore scores = new HighScore(this);
-            scores.open();
-
             // Check if it's a new high score
-            if(game.getScore() > scores.getLowestScore())
+            HighScore scores = new HighScore(this);
+            int lowestScore = scores.getLowestScore();
+            scores.close();
+
+            if(game.getScore() > lowestScore)
             {
-                scores.close();
                 Intent intent = new Intent("ca.alexcomeau.texmobile.EnterScore");
-                intent.putExtra("score", game.getScore());
-                intent.putExtra("time", game.getFrames());
-                intent.putExtra("grade", game.getGrade());
-                startActivity(intent);
-            }
-            else
-            {
-                scores.close();
-                Intent intent = new Intent("ca.alexcomeau.texmobile.HighScore");
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         }
-        else
+
+        Intent intent = new Intent("ca.alexcomeau.texmobile.HighScore");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK)
         {
-            Intent intent = new Intent("ca.alexcomeau.texmobile.HighScore");
-            startActivity(intent);
+            // Convert the frames to minutes and seconds
+            String time;
+            int seconds = game.getFrames() / 30;
+            time = (seconds / 60) + ":" + (seconds % 60);
+
+            // Write the high score to the database
+            HighScore scores = new HighScore(this);
+            scores.writeScore(data.getStringExtra("name"), game.getScore(), time, game.getGrade());
+            scores.close();
         }
     }
 }

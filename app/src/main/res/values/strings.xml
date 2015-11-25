@@ -16,6 +16,7 @@
     <string name="newHighScore">You set a new high score!</string>
     <string name="enterName">Enter your name:</string>
     <string name="hint">Name</string>
+    <string name="enter">Enter</string>
 
     <string name="highscore_name">High Scores</string>
     <string name="highscore">High Scores</string>

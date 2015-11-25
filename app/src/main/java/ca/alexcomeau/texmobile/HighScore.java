@@ -40,12 +40,15 @@ public class HighScore {
 
     public boolean writeScore(String name, int score, String time, String grade)
     {
+        if(db == null) open();
+
         ContentValues values = new ContentValues();
         values.put("name", name);
         values.put("score", score);
         values.put("duration", time);
         values.put("grade", grade);
         db.insert("tblGames", null, values);
+
         return true;
     }
 
@@ -54,7 +57,7 @@ public class HighScore {
         try {
             cursor = null;
 
-            if(db == null) return 0;
+            if(db == null) open();
 
             cursor = db.rawQuery("SELECT MIN(score) FROM tblScores", null);
 
@@ -69,10 +72,7 @@ public class HighScore {
     // Inner class =================================================================
     private class DBHelper extends SQLiteOpenHelper {
 
-        public DBHelper ()
-        {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
+        public DBHelper () { super(context, DATABASE_NAME, null, DATABASE_VERSION); }
 
         @Override
         public void onCreate(SQLiteDatabase db) {}
