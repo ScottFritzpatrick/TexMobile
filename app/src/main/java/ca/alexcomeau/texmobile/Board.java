@@ -1,10 +1,11 @@
 package ca.alexcomeau.texmobile;
 
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import ca.alexcomeau.texmobile.blocks.Block;
+
 
 public class Board implements Parcelable {
     private int[][] stack;
@@ -25,7 +26,7 @@ public class Board implements Parcelable {
     // Checks whether the block is currently in a legal position.
     public boolean checkBlock(Block block)
     {
-        for(Coordinate c : block.getAbsoluteCoordinates())
+        for(Point c : block.getAbsoluteCoordinates())
         {
             if(c.y == -1 || c.x == -1 || c.x == stack[0].length)
                 return false;
@@ -119,7 +120,7 @@ public class Board implements Parcelable {
     public void lockBlock(Block block)
     {
         // Color in the places the block is over
-        for(Coordinate c : block.getAbsoluteCoordinates())
+        for(Point c : block.getAbsoluteCoordinates())
             stack[c.y][c.x] = block.getBlockColor();
     }
 

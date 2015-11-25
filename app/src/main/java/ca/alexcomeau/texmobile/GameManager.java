@@ -1,5 +1,6 @@
 package ca.alexcomeau.texmobile;
 
+import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class GameManager implements Parcelable {
     // Blocks lock in place LOCK_DELAY frames after touching the stack.
     private final int LOCK_DELAY = 15;
     // Where pieces spawn
-    private final Coordinate START = new Coordinate(3,17);
+    private final Point START = new Point(3,17);
     // Pieces are spawned SPAWN_DELAY frames after a piece is locked.
     private final int SPAWN_DELAY = 15;
     // Inputs are taken every MOVEMENT_DELAY frames.
@@ -244,7 +245,7 @@ public class GameManager implements Parcelable {
 
         // Get all the unique rows the block is spanning
         ArrayList<Integer> toCheck = new ArrayList<>();
-        for(Coordinate c : currentBlock.getAbsoluteCoordinates())
+        for(Point c : currentBlock.getAbsoluteCoordinates())
         {
             if (!toCheck.contains(c.y))
                 toCheck.add(c.y);

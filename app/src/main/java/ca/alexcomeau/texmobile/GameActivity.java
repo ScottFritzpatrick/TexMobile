@@ -1,7 +1,5 @@
 package ca.alexcomeau.texmobile;
 
-import android.app.ActionBar;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -128,7 +126,7 @@ public class GameActivity extends AppCompatActivity {
         // Paint the active piece onto the canvas
         Block currentPiece = game.getCurrentBlock();
         paint.setColor(currentPiece.getBlockColor());
-        for(Coordinate coord : currentPiece.getAbsoluteCoordinates())
+        for(Point coord : currentPiece.getAbsoluteCoordinates())
         {
             canvas.drawRect(coord.x * pixels,
                     canvas.getHeight() - (coord.y * pixels) - pixels,

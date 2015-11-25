@@ -1,16 +1,16 @@
 package ca.alexcomeau.texmobile.blocks;
 
+import android.graphics.Point;
 import java.io.Serializable;
-import ca.alexcomeau.texmobile.Coordinate;
 
 public abstract class Block implements Serializable {
     protected int rotation;
-    protected Coordinate position;
+    protected Point position;
     protected int blockColor;
     // Nested arrays should be based on a 4x4 grid. Order doesn't really matter.
-    protected Coordinate[][] rotations;
+    protected Point[][] rotations;
 
-    public Block(Coordinate start, Coordinate[][] rotate, int color)
+    public Block(Point start, Point[][] rotate, int color)
     {
         rotation = 0;
         position = start;
@@ -30,16 +30,16 @@ public abstract class Block implements Serializable {
     public void rotateLeft() { if(rotation-- == -1) rotation = rotations.length - 1; }
 
     // Adds the position to the current relative coordinates and returns that.
-    public Coordinate[] getAbsoluteCoordinates()
+    public Point[] getAbsoluteCoordinates()
     {
-        Coordinate[] coords = getRelativeCoordinates();
-        for(Coordinate c : coords) {
-            c = c.add(position);
+        Point[] coords = getRelativeCoordinates();
+        for(Point c : coords) {
+            c.offset(position.x, position.y);
         }
         return coords;
     }
 
     public int getBlockColor() { return blockColor; }
-    public Coordinate getPosition() { return position; }
-    public Coordinate[] getRelativeCoordinates() { return rotations[rotation]; }
+    public Point getPosition() { return position; }
+    public Point[] getRelativeCoordinates() { return rotations[rotation]; }
 }
