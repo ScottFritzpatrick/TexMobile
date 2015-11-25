@@ -18,20 +18,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:text="@string/easy"
-        android:textSize="32sp"/>
+        android:textSize="32sp"
+        android:onClick="btnClick"
+        android:tag="200"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/normal"
-        android:textSize="32sp"/>
+        android:textSize="32sp"
+        android:onClick="btnClick"
+        android:tag="500"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/hard"
-        android:textSize="32sp"/>
+        android:textSize="32sp"
+        android:onClick="btnClick"
+        android:tag="999"/>
 
 </LinearLayout>
