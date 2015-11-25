@@ -12,8 +12,35 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".GameActivity"
+            android:label="@string/game_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.Game" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".EnterScoreActivity"
+            android:label="@string/enter_name"
+            android:theme="@style/Base.Theme.AppCompat.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.EnterScore" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".HighScoreActivity"
+            android:label="@string/highscore_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.HighScores" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
