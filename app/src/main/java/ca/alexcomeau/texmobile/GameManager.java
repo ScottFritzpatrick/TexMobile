@@ -18,7 +18,7 @@ public class GameManager implements Parcelable {
     private int spawnWait;
     private int fallWait;
     private int movementWait;
-    private long startTimeMS;
+    private int elapsedFrames;
     private boolean grandmasterValid, check1, check2, check3;
     private boolean redraw;
 
@@ -54,7 +54,7 @@ public class GameManager implements Parcelable {
         combo = 1;
         gameOver = null;
         nextBlock = generateNewBlock();
-        startTimeMS = System.currentTimeMillis();
+        elapsedFrames = 0;
 
         // If they're doing a full game they can attain grandmaster rank
         grandmasterValid = (maxLevel == 999 && levelStart == 0);
@@ -66,6 +66,8 @@ public class GameManager implements Parcelable {
     // Move ahead a frame
     public void advanceFrame(String input)
     {
+        elapsedFrames++;
+
         // No point evaluating movement and such if there's no piece to manipulate.
         boolean downtime = false;
 
@@ -281,11 +283,8 @@ public class GameManager implements Parcelable {
                 level = maxLevel;
                 if(check3)
                 {
-                    // Final check. Score >= 126000, Time <= 13m30s
-                    if(score < 126000 && System.currentTimeMillis() - startTimeMS > 810000)
-                    {
-                        grandmasterValid = false;
-                    }
+                    // Final check. Score >= 126000, Time <= 13m30s. 1 frame per 34 ms.
+                    if(score < 126000 && elapsedFrames * 34 > 810000) grandmasterValid = false;
                     check3 = false;
                 }
                 gameOver = true;
@@ -299,7 +298,8 @@ public class GameManager implements Parcelable {
     // Generates a block of a random type.
     private Block generateNewBlock()
     {
-        switch((int) (Math.random() * 7)){
+        switch((int) (Math.random() * 7))
+        {
             case 0:
                 return new BlockI(START);
             case 1:
@@ -357,7 +357,7 @@ public class GameManager implements Parcelable {
             // This is one of the checkpoints for grandmaster rank. Score >= 12000, Time <= 4m15s
             if(check1)
             {
-                if (score < 12000 || System.currentTimeMillis() - startTimeMS > 255000)
+                if (score < 12000 || elapsedFrames * 34 > 255000)
                 {
                     grandmasterValid = false;
                     // No need to do the other checks if one fails.
@@ -380,10 +380,11 @@ public class GameManager implements Parcelable {
         else if(level < 999)
         {
             superGravity = 20;
-            // Another checkpoint. Score >= 40000 Time <= 7m30s
+
+            // Another checkpoint. Score >= 40000, Time <= 7m30s
             if(check2)
             {
-                if (score < 40000 || System.currentTimeMillis() - startTimeMS > 450000)
+                if (score < 40000 || elapsedFrames * 34 > 450000)
                 {
                     grandmasterValid = false;
                     // No need to do the other checks if one fails.
@@ -394,10 +395,53 @@ public class GameManager implements Parcelable {
         }
     }
 
+    public String getGrade()
+    {
+        if(score < 400)
+            return "9";
+        else if(score < 800)
+            return "8";
+        else if(score < 1400)
+            return "7";
+        else if(score < 2000)
+            return "6";
+        else if(score < 3500)
+            return "5";
+        else if(score < 5500)
+            return "4";
+        else if(score < 8000)
+            return "3";
+        else if(score < 12000)
+            return "2";
+        else if(score < 16000)
+            return "1";
+        else if(score < 22000)
+            return "S1";
+        else if(score < 30000)
+            return "S2";
+        else if(score < 40000)
+            return "S3";
+        else if(score < 52000)
+            return "S4";
+        else if(score < 66000)
+            return "S5";
+        else if(score < 82000)
+            return "S6";
+        else if(score < 100000)
+            return "S7";
+        else if(score < 120000)
+            return "S8";
+        else if(grandmasterValid && score >= 126000)
+            return "GM";
+        else
+            return "S9";
+    }
+
     public int[][] getStack() { return gameBoard.getStack(); }
     public int getLevel() { return level; }
     public int getMaxLevel() { return maxLevel; }
     public int getScore() { return score; }
+    public int getFrames() { return elapsedFrames; }
     public Boolean getGameOver() { return gameOver; }
     public Block getCurrentBlock() { return currentBlock; }
     public boolean getRedraw() { return redraw; }
@@ -417,7 +461,7 @@ public class GameManager implements Parcelable {
         spawnWait = in.readInt();
         fallWait = in.readInt();
         movementWait = in.readInt();
-        startTimeMS = in.readLong();
+        elapsedFrames = in.readInt();
         redraw = in.readByte() != 0x00;
         grandmasterValid = in.readByte() != 0x00;
         check1 = in.readByte() != 0x00;
@@ -447,7 +491,7 @@ public class GameManager implements Parcelable {
         dest.writeInt(spawnWait);
         dest.writeInt(fallWait);
         dest.writeInt(movementWait);
-        dest.writeLong(startTimeMS);
+        dest.writeInt(elapsedFrames);
         dest.writeByte((byte) (redraw ? 0x01 : 0x00));
         dest.writeByte((byte) (grandmasterValid ? 0x01 : 0x00));
         dest.writeByte((byte) (check1 ? 0x01 : 0x00));

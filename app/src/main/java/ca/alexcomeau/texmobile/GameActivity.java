@@ -1,5 +1,6 @@
 package ca.alexcomeau.texmobile;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -155,6 +156,32 @@ public class GameActivity extends AppCompatActivity {
 
     private void gameOver(Boolean result)
     {
-        //// TODO: 11/24/2015 Add game over handling 
+        if(result)
+        {
+            HighScore scores = new HighScore(this);
+            scores.open();
+
+            // Check if it's a new high score
+            if(game.getScore() > scores.getLowestScore())
+            {
+                scores.close();
+                Intent intent = new Intent("ca.alexcomeau.texmobile.EnterScore");
+                intent.putExtra("score", game.getScore());
+                intent.putExtra("time", game.getFrames());
+                intent.putExtra("grade", game.getGrade());
+                startActivity(intent);
+            }
+            else
+            {
+                scores.close();
+                Intent intent = new Intent("ca.alexcomeau.texmobile.HighScore");
+                startActivity(intent);
+            }
+        }
+        else
+        {
+            Intent intent = new Intent("ca.alexcomeau.texmobile.HighScore");
+            startActivity(intent);
+        }
     }
 }
