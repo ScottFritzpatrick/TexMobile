@@ -5,7 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.*;
 
-public class HighScore {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ScoreDBManager {
     private final String DATABASE_NAME = "scoresdb";
     private final int DATABASE_VERSION = 1;
 
@@ -15,7 +18,7 @@ public class HighScore {
     private DBHelper dbHelper;
 
     // Constructor
-    public HighScore(Context ctx)
+    public ScoreDBManager(Context ctx)
     {
         context = ctx;
         cursor = null;
@@ -67,6 +70,32 @@ public class HighScore {
             return cursor.getInt(0);
         }
         catch (Exception e) { return 0;}
+    }
+
+    public List<Score> getAllScores()
+    {
+        List<Score> result = new ArrayList<>();
+
+        try {
+            cursor = null;
+
+            if(db == null) open();
+
+            cursor = db.rawQuery("SELECT * FROM tblScores ORDER BY score DESC, time ASC, grade DESC, name ASC", null);
+
+            while (cursor.moveToNext())
+            {
+                Score s = new Score();
+                s.name = cursor.getString(1);
+                s.score = cursor.getInt(2);
+                s.time = cursor.getString(3);
+                s.grade = cursor.getString(4);
+                result.add(s);
+            }
+        }
+        catch (Exception e) { return result; }
+
+        return result;
     }
 
     // Inner class =================================================================

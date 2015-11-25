@@ -159,7 +159,7 @@ public class GameActivity extends AppCompatActivity {
         if(result)
         {
             // Check if it's a new high score
-            HighScore scores = new HighScore(this);
+            ScoreDBManager scores = new ScoreDBManager(this);
             int lowestScore = scores.getLowestScore();
             scores.close();
 
@@ -183,11 +183,11 @@ public class GameActivity extends AppCompatActivity {
         {
             // Convert the frames to minutes and seconds
             String time;
-            int seconds = game.getFrames() / 30;
+            int seconds = game.getFrames() / 30; // 30 frames per second
             time = (seconds / 60) + ":" + (seconds % 60);
 
             // Write the high score to the database
-            HighScore scores = new HighScore(this);
+            ScoreDBManager scores = new ScoreDBManager(this);
             scores.writeScore(data.getStringExtra("name"), game.getScore(), time, game.getGrade());
             scores.close();
         }
