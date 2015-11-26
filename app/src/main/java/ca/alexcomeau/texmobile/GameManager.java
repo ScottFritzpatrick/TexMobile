@@ -4,8 +4,8 @@ import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-
 import java.util.ArrayList;
+import java.util.LinkedList;
 import ca.alexcomeau.texmobile.blocks.*;
 
 public class GameManager implements Parcelable {
@@ -21,6 +21,7 @@ public class GameManager implements Parcelable {
     private int fallWait;
     private int movementWait;
     private int elapsedFrames;
+    private LinkedList<Integer> history;
     private boolean grandmasterValid, check1, check2, check3;
     private boolean redraw;
 
@@ -49,16 +50,25 @@ public class GameManager implements Parcelable {
         score = 0;
         level = 0;
         maxLevel = levelEnd;
-        // Spawn the first piece immediately
-        spawnWait = SPAWN_DELAY;
-        movementWait = 0;
         addLevel(levelStart);
         combo = 1;
         gameOver = null;
-        currentBlock = generateNewBlock();
+
+        // Start the history full of Zs.
+        history = new LinkedList<>();
+        history.add(6);
+        history.add(6);
+        history.add(6);
+        history.add(6);
+
+        // Don't generate an O, S, or Z as the first piece
+        currentBlock = generateNewBlock((int)(Math.random() * 4));
         nextBlock = generateNewBlock();
         elapsedFrames = 0;
+        spawnWait = 0;
         lockCurrent = LOCK_DELAY;
+        movementWait = 0;
+        fallWait = 0;
 
         // If they're doing a full game they can attain grandmaster rank
         grandmasterValid = (maxLevel == 999 && levelStart == 0);
@@ -135,7 +145,6 @@ public class GameManager implements Parcelable {
             // Check if the block is currently in a state of falling
             if (gameBoard.checkDown(currentBlock))
             {
-                Log.d("erzz", "the block is falling!");
                 lockCurrent = LOCK_DELAY;
                 // Move the block down if enough time has passed
                 if (gravity > 0)
@@ -143,7 +152,6 @@ public class GameManager implements Parcelable {
                     {
                         fallWait = 0;
                         currentBlock.moveDown();
-                        Log.d("erzz", "falling!");
                     }
                     else
                         for (int i = 0; i < superGravity; i++)
@@ -184,7 +192,6 @@ public class GameManager implements Parcelable {
 
     private void moveLeft()
     {
-        Log.d("erzz", "trying to go left!");
         if(gameBoard.checkLeft(currentBlock))
         {
             currentBlock.moveLeft();
@@ -306,9 +313,13 @@ public class GameManager implements Parcelable {
     }
 
     // Generates a block of a random type.
-    private Block generateNewBlock()
+    private Block generateNewBlock(int i)
     {
-        switch((int) (Math.random() * 7))
+        // Take out the oldest enement of history and add in this one
+        history.remove();
+        history.add(i);
+
+        switch(i)
         {
             case 0:
                 return new BlockI(START);
@@ -317,14 +328,30 @@ public class GameManager implements Parcelable {
             case 2:
                 return new BlockL(START);
             case 3:
-                return new BlockO(START);
+                return new BlockT(START);
             case 4:
                 return new BlockS(START);
             case 5:
-                return new BlockT(START);
+                return new BlockO(START);
             default:
                 return new BlockZ(START);
         }
+    }
+
+    private Block generateNewBlock()
+    {
+        int i = (int)(Math.random() * 7);
+        int j = 1;
+
+        // Generate a new number until there's one that's not in the history, or 4 attempts
+        while(history.contains(i) && j < 5)
+        {
+            Log.d("erzz","oops a repeat");
+            i = (int)(Math.random() * 7);
+            j++;
+        }
+
+        return generateNewBlock(i);
     }
 
     private void addLevel(int toAdd)

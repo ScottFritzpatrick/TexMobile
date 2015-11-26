@@ -26,10 +26,20 @@ public abstract class Block implements Serializable {
     public void moveRight() { position.x++; }
 
     // Loops around the rotations clockwise
-    public void rotateRight() { if(rotation++ == rotations.length) rotation = 0; }
+    public void rotateRight()
+    {
+        rotation++;
+        if(rotation == rotations.length)
+            rotation = 0;
+    }
 
     // Loops around the rotations counterclockwise
-    public void rotateLeft() { if(rotation-- == -1) rotation = rotations.length - 1; }
+    public void rotateLeft()
+    {
+        rotation--;
+        if(rotation == -1)
+            rotation = rotations.length - 1;
+    }
 
     // Adds the position to the current relative coordinates and returns that.
     public Point[] getAbsoluteCoordinates()

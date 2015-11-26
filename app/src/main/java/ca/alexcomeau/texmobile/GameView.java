@@ -70,7 +70,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     public void update()
     {
-        game.advanceFrame("right");
+        game.advanceFrame("rotateRight");
     }
 
     public void render(Canvas canvas)
