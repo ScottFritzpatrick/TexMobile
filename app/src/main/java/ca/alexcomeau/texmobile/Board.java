@@ -30,7 +30,7 @@ public class Board implements Parcelable {
 
         for(Point c : coords)
         {
-            if(c.y == -1 || c.x == -1 || c.x == stack[0].length)
+            if(c.y < 0 || c.x < 0 || c.x >= stack[0].length)
                 return false;
             if (stack[c.y][c.x] != Color.BLACK)
                 return false;
