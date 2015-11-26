@@ -50,8 +50,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         if(savedInstanceState == null)
         {
-            Bundle myBundle = getIntent().getExtras();
-            gameView.setupGame(myBundle.getInt("startLevel"), myBundle.getInt("endLevel"), pixels);
+            Intent intent = getIntent();
+            gameView.setupGame(intent.getIntExtra("startLevel", 0), intent.getIntExtra("endLevel", 999), this);
         }
         else
         {

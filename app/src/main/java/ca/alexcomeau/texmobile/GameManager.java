@@ -104,8 +104,8 @@ public class GameManager implements Parcelable {
                 movementWait = MOVEMENT_DELAY;
 
                 // A new block appearing increases the level by one, unless the level ends in 99 or is the second last
-                if ((level + 1) % 100 == 0 || level == maxLevel - 1)
-                    level++;
+                if (!((level + 1) % 100 == 0 || level == maxLevel - 1))
+                    addLevel(1);
             }
             else
                 downtime = true;

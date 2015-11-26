@@ -6,10 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
+
 import ca.alexcomeau.texmobile.blocks.Block;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
@@ -17,7 +20,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     private GameThread thread;
     private GameManager game;
     private Context context;
-    private int pixels;
+    private AppCompatActivity activity;
+    private TextView txtScore;
+    private TextView txtLevel;
+    private String strScore;
+    private String strLevel;
+    private int rectWidth;
+    private boolean gameStarted;
 
     public GameView(Context ctx, AttributeSet attrs)
     {
@@ -26,13 +35,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
+        gameStarted = false;
     }
 
-    public void setupGame(int start, int end, int pixels)
+    public void setupGame(int start, int end, AppCompatActivity activity)
     {
         game = new GameManager();
         game.start(start, end);
-        this.pixels = 40;
+        this.activity = activity;
+
+        txtScore = (TextView) activity.findViewById(R.id.txtScore);
+        txtLevel = (TextView) activity.findViewById(R.id.txtLevel);
+
+        gameStarted = true;
+
     }
 
     @Override
@@ -70,13 +86,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     public void update()
     {
-        game.advanceFrame("rotateRight");
+        if(gameStarted)
+            game.advanceFrame("drop");
     }
 
     public void render(Canvas canvas)
     {
-        if(game.getRedraw())
+        if(game.getRedraw() && gameStarted)
         {
+            // Set up the rectangle width based on the canvas size
+            if(rectWidth == 0)
+                rectWidth = canvas.getWidth() / 10;
+
             canvas.drawColor(Color.BLACK);
             Paint paint = new Paint();
             int[][] colors = game.getStack();
@@ -89,10 +110,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
                     // The canvas is already black so we don't have to draw those.
                     if (paint.getColor() != Color.BLACK)
-                        canvas.drawRect(j * pixels,                 // Left
-                                        (20 - i) * pixels - pixels, // Top
-                                        j * pixels + pixels,        // Right
-                                        (20 - i) * pixels,          // Bottom
+                        canvas.drawRect(j * rectWidth,                 // Left
+                                        (20 - i) * rectWidth - rectWidth, // Top
+                                        j * rectWidth + rectWidth,        // Right
+                                        (20 - i) * rectWidth,          // Bottom
                                         paint);                     // Color
                 }
 
@@ -103,13 +124,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                 paint.setColor(currentPiece.getBlockColor());
                 for (Point coord : currentPiece.getAbsoluteCoordinates())
                 {
-                    canvas.drawRect(coord.x * pixels,
-                                    (20 - coord.y) * pixels - pixels,
-                                    coord.x * pixels + pixels,
-                                    (20 - coord.y) * pixels,
+                    canvas.drawRect(coord.x * rectWidth,
+                                    (20 - coord.y) * rectWidth - rectWidth,
+                                    coord.x * rectWidth + rectWidth,
+                                    (20 - coord.y) * rectWidth,
                                     paint);
                 }
             }
+
+            Log.d("erzz", "level: " + game.getLevel());
+
+            // Update the text views
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run()
+                {
+                    txtScore.setText(String.format(activity.getString(R.string.score), game.getScore()));
+                    txtLevel.setText(String.format(activity.getString(R.string.level), game.getLevel(), game.getMaxLevel()));
+                }
+            });
         }
 
         if(game.getGameOver() != null)
@@ -118,10 +151,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             thread.setRunning(false);
             // Draw a message
             Paint paint = new Paint();
+            paint.setTextSize(rectWidth);
+
+            // shadow
+            paint.setColor(Color.DKGRAY);
+            canvas.drawText(context.getString(R.string.gameover), rectWidth + 2, rectWidth + 2, paint);
+            canvas.drawText(context.getString(R.string.pressAny), rectWidth + 2, rectWidth * 3 + 2, paint);
+
             paint.setColor(Color.WHITE);
-            paint.setTextSize(pixels);
-            canvas.drawText(context.getString(R.string.gameover), pixels, pixels, paint);
-            canvas.drawText(context.getString(R.string.pressAny), pixels, pixels * 3, paint);
+            canvas.drawText(context.getString(R.string.gameover), rectWidth, rectWidth, paint);
+            canvas.drawText(context.getString(R.string.pressAny), rectWidth, rectWidth * 3, paint);
+
         }
     }
 }
