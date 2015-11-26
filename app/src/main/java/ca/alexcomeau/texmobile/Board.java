@@ -101,23 +101,19 @@ public class Board implements Parcelable {
         return true;
     }
 
-    // Clears all the blocks from the specified line and up for a number of lines equal to num.
-    public void clearLines(int line, int num)
+    // Clears all the blocks from the specified line.
+    public void clearLine(int line)
     {
         Log.d("erzz", "clearing a line!");
         // Set the cells to black.
-        for(int i = 0; i < num; i++)
-            for(int j = 0; j < 10; j++)
-                stack[line + i][j] = Color.BLACK;
+        for(int j = 0; j < 10; j++)
+            stack[line][j] = Color.BLACK;
 
         // Lower all the other lines by copying the lines above them
-        //System.arraycopy(stack, line + 1, stack, line, stack.length - line - 1);
+        System.arraycopy(stack, line + 1, stack, line, stack.length - line - 1);
 
         // The top row will always be all black, blocks cannot be placed there
     }
-
-    // Clear a single line
-    public void clearLine(int line) { clearLines(line, 1); }
 
     // Saves a block to the stack.
     public void lockBlock(Block block)

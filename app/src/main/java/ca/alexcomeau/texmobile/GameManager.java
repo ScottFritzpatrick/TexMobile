@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import ca.alexcomeau.texmobile.blocks.*;
 
@@ -53,6 +54,7 @@ public class GameManager implements Parcelable {
         addLevel(levelStart);
         combo = 1;
         gameOver = null;
+        redraw = true;
 
         // Start the history full of Zs.
         history = new LinkedList<>();
@@ -267,8 +269,12 @@ public class GameManager implements Parcelable {
             if (!toCheck.contains(c.y))
             {
                 toCheck.add(c.y);
+                Log.d("erzz", "added " + c.y);
             }
         }
+
+        // Sort it in descending order so it's checked from top to bottom.
+        Collections.sort(toCheck, Collections.reverseOrder());
 
         // Check each of those rows
         for(Integer i : toCheck)
@@ -346,7 +352,6 @@ public class GameManager implements Parcelable {
         // Generate a new number until there's one that's not in the history, or 4 attempts
         while(history.contains(i) && j < 5)
         {
-            Log.d("erzz","oops a repeat");
             i = (int)(Math.random() * 7);
             j++;
         }

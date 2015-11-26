@@ -55,6 +55,7 @@ public class GameThread extends Thread
 
                     // How long did that take?
                     timeDiff = System.currentTimeMillis() - beginTime;
+                    Log.d("erzz", "time taken: " + timeDiff);
 
                     // How long do we need to sleep?
                     sleepTime = (int)(FRAME_PERIOD - timeDiff);
