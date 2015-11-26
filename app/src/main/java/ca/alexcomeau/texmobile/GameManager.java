@@ -17,7 +17,6 @@ public class GameManager implements Parcelable {
     private int lockCurrent;
     private int droppedLines;
     private int combo;
-    private Boolean gameOver;
     private int spawnWait;
     private int fallWait;
     private int movementWait;
@@ -25,6 +24,7 @@ public class GameManager implements Parcelable {
     private LinkedList<Integer> history;
     private boolean grandmasterValid, check1, check2, check3;
     private boolean redraw;
+    private Boolean gameOver;
 
     // Pieces drop every gravity frames, if gravity > 0.
     private int gravity;
@@ -47,6 +47,7 @@ public class GameManager implements Parcelable {
     // Start the game
     public void start(int levelStart, int levelEnd)
     {
+        // Initialize
         gameBoard = new Board();
         score = 0;
         level = 0;
@@ -55,6 +56,11 @@ public class GameManager implements Parcelable {
         combo = 1;
         gameOver = null;
         redraw = true;
+        elapsedFrames = 0;
+        spawnWait = 0;
+        lockCurrent = LOCK_DELAY;
+        movementWait = 0;
+        fallWait = 0;
 
         // Start the history full of Zs.
         history = new LinkedList<>();
@@ -66,11 +72,6 @@ public class GameManager implements Parcelable {
         // Don't generate an O, S, or Z as the first piece
         currentBlock = generateNewBlock((int)(Math.random() * 4));
         nextBlock = generateNewBlock();
-        elapsedFrames = 0;
-        spawnWait = 0;
-        lockCurrent = LOCK_DELAY;
-        movementWait = 0;
-        fallWait = 0;
 
         // If they're doing a full game they can attain grandmaster rank
         grandmasterValid = (maxLevel == 999 && levelStart == 0);

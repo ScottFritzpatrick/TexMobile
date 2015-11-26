@@ -17,6 +17,7 @@
             android:layout_weight="1"
             android:id="@+id/btnDrop1"
             android:tag="drop"
+            android:text="D"
             style="?android:buttonBarButtonStyle"/>
 
         <Button
@@ -25,6 +26,7 @@
             android:layout_weight="1"
             android:id="@+id/btnMoveLeft"
             android:tag="left"
+            android:text="L"
             style="?android:buttonBarButtonStyle"/>
 
         <Button
@@ -33,6 +35,7 @@
             android:layout_weight="1"
             android:id="@+id/btnRotateLeft"
             android:tag="rotateLeft"
+            android:text="rL"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 
@@ -98,6 +101,7 @@
             android:layout_weight="1"
             android:id="@+id/btnDrop2"
             android:tag="drop"
+            android:text="D"
             style="?android:buttonBarButtonStyle"/>
 
         <Button
@@ -106,6 +110,7 @@
             android:layout_weight="1"
             android:id="@+id/btnMoveRight"
             android:tag="right"
+            android:text="R"
             style="?android:buttonBarButtonStyle"/>
 
         <Button
@@ -114,6 +119,7 @@
             android:layout_weight="1"
             android:id="@+id/btnRotateRight"
             android:tag="rotateRight"
+            android:text="rR"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 
