@@ -65,30 +65,35 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/btnMoveLeft"
+            android:tag="left"
             style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/btnRotateLeft"
+            android:tag="rotateLeft"
             style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/btnDrop1"
+            android:tag="drop"
             style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/btnRotateRight"
+            android:tag="rotateRight"
             style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/btnMoveRight"
+            android:tag="right"
             style="?android:buttonBarButtonStyle"/>
         <Button
             android:layout_width="0dp"

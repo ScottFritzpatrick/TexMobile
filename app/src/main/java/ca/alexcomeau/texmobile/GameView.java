@@ -20,11 +20,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     private GameThread thread;
     private GameManager game;
     private Context context;
-    private AppCompatActivity activity;
+    private GameActivity activity;
     private TextView txtScore;
     private TextView txtLevel;
-    private String strScore;
-    private String strLevel;
     private int rectWidth;
     private boolean gameStarted;
 
@@ -38,7 +36,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         gameStarted = false;
     }
 
-    public void setupGame(int start, int end, AppCompatActivity activity)
+    public void setupGame(int start, int end, GameActivity activity)
     {
         game = new GameManager();
         game.start(start, end);
@@ -87,7 +85,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void update()
     {
         if(gameStarted)
-            game.advanceFrame("drop");
+            game.advanceFrame(activity.getInput());
     }
 
     public void render(Canvas canvas)
@@ -163,5 +161,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             canvas.drawText(context.getString(R.string.pressAny), rectWidth, rectWidth * 3, paint);
 
         }
+    }
+
+    public GameManager getGame()
+    {
+        return game;
     }
 }
