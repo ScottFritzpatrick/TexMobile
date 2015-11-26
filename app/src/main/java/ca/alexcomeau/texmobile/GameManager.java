@@ -58,6 +58,7 @@ public class GameManager implements Parcelable {
         currentBlock = generateNewBlock();
         nextBlock = generateNewBlock();
         elapsedFrames = 0;
+        lockCurrent = LOCK_DELAY;
 
         // If they're doing a full game they can attain grandmaster rank
         grandmasterValid = (maxLevel == 999 && levelStart == 0);
@@ -87,6 +88,7 @@ public class GameManager implements Parcelable {
                 if(!gameBoard.checkBlock(currentBlock))
                     gameOver = false;
 
+                spawnWait = 0;
                 fallWait = 0;
                 // Let them move on the frame it appears
                 movementWait = MOVEMENT_DELAY;
@@ -133,6 +135,7 @@ public class GameManager implements Parcelable {
             // Check if the block is currently in a state of falling
             if (gameBoard.checkDown(currentBlock))
             {
+                Log.d("erzz", "the block is falling!");
                 lockCurrent = LOCK_DELAY;
                 // Move the block down if enough time has passed
                 if (gravity > 0)
@@ -140,6 +143,7 @@ public class GameManager implements Parcelable {
                     {
                         fallWait = 0;
                         currentBlock.moveDown();
+                        Log.d("erzz", "falling!");
                     }
                     else
                         for (int i = 0; i < superGravity; i++)
@@ -180,6 +184,7 @@ public class GameManager implements Parcelable {
 
     private void moveLeft()
     {
+        Log.d("erzz", "trying to go left!");
         if(gameBoard.checkLeft(currentBlock))
         {
             currentBlock.moveLeft();
@@ -246,6 +251,7 @@ public class GameManager implements Parcelable {
     // Checks for clears, clears them if so, and adds to the score and level
     private void checkClears()
     {
+        Log.d("erzz", "checking for clears!?");
         int linesCleared = 0;
 
         // Get all the unique rows the block is spanning
@@ -253,7 +259,10 @@ public class GameManager implements Parcelable {
         for(Point c : currentBlock.getAbsoluteCoordinates())
         {
             if (!toCheck.contains(c.y))
+            {
+                Log.d("erzz", c.y + " definitely needs to be cleared");
                 toCheck.add(c.y);
+            }
         }
 
         // Check each of those rows
@@ -301,6 +310,7 @@ public class GameManager implements Parcelable {
     // Generates a block of a random type.
     private Block generateNewBlock()
     {
+        Log.d("erzz", "generating a block!");
         switch((int) (Math.random() * 7))
         {
             case 0:

@@ -28,6 +28,7 @@ public class Board implements Parcelable {
     // Checks whether the block is currently in a legal position.
     public boolean checkBlock(Block block)
     {
+        Log.d("erzz", "checking a block! false unless stated otherwise!");
         Point[] coords = block.getAbsoluteCoordinates();
 
         for(Point c : coords)
@@ -37,7 +38,7 @@ public class Board implements Parcelable {
             if (stack[c.y][c.x] != Color.BLACK)
                 return false;
         }
-
+        Log.d("erzz", "otherwise!");
         return true;
     }
 
@@ -94,6 +95,7 @@ public class Board implements Parcelable {
     // Returns whether the specified line is filled, and thus can be cleared.
     public boolean checkLine(int line)
     {
+        Log.d("erzz", "checking a line!");
         for(int i : stack[line])
         {
             // Check each cell in the specified row. If black is found, that means there is an empty cell.
@@ -106,6 +108,7 @@ public class Board implements Parcelable {
     // Clears all the blocks from the specified line and up for a number of lines equal to num.
     public void clearLines(int line, int num)
     {
+        Log.d("erzz", "clearing a line!");
         // Set the cells to black.
         for(int i = 0; i < num; i++)
             for(int j : stack[line + i])
@@ -123,6 +126,7 @@ public class Board implements Parcelable {
     // Saves a block to the stack.
     public void lockBlock(Block block)
     {
+        Log.d("erzz", "locking a block!");
         // Color in the places the block is over
         for(Point c : block.getAbsoluteCoordinates())
             stack[c.y][c.x] = block.getBlockColor();

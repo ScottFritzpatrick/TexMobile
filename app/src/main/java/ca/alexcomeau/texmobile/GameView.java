@@ -72,6 +72,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     public void render(Canvas canvas)
     {
+        if(game.getRedraw())
+        {
+            canvas.drawColor(Color.BLACK);
             Paint paint = new Paint();
             int[][] colors = game.getStack();
             int countRow, countColumn;
@@ -107,10 +110,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             Block currentPiece = game.getCurrentBlock();
             if(currentPiece != null)
             {
-                paint.setColor(Color.WHITE);
+                paint.setColor(currentPiece.getBlockColor());
                 for(Point coord : currentPiece.getAbsoluteCoordinates())
                 {
-                    Log.d("erzz","coord.y = " + coord.y);
                     canvas.drawRect(coord.x * pixels,
                             canvas.getHeight() - (coord.y * pixels) - pixels,
                             (coord.x * pixels) + pixels,
@@ -118,6 +120,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                             paint);
                 }
             }
-
+        }
     }
 }
