@@ -18,17 +18,14 @@ public class Board implements Parcelable {
         stack = new int[22][10];
 
         // Initialize all the colors to be black
-        for(int[] c : stack)
-        {
-            for(int i : c)
-                i = Color.BLACK;
-        }
+        for(int i = 0; i < 22; i++)
+            for(int j = 0; j < 10; j++)
+                stack[i][j] = Color.BLACK;
     }
 
     // Checks whether the block is currently in a legal position.
     public boolean checkBlock(Block block)
     {
-        Log.d("erzz", "checking a block! false unless stated otherwise!");
         Point[] coords = block.getAbsoluteCoordinates();
 
         for(Point c : coords)
@@ -38,7 +35,6 @@ public class Board implements Parcelable {
             if (stack[c.y][c.x] != Color.BLACK)
                 return false;
         }
-        Log.d("erzz", "otherwise!");
         return true;
     }
 
@@ -111,11 +107,11 @@ public class Board implements Parcelable {
         Log.d("erzz", "clearing a line!");
         // Set the cells to black.
         for(int i = 0; i < num; i++)
-            for(int j : stack[line + i])
-                j = Color.BLACK;
+            for(int j = 0; j < 10; j++)
+                stack[line + i][j] = Color.BLACK;
 
         // Lower all the other lines by copying the lines above them
-        System.arraycopy(stack, line + 1, stack, line, stack.length - line - 1);
+        //System.arraycopy(stack, line + 1, stack, line, stack.length - line - 1);
 
         // The top row will always be all black, blocks cannot be placed there
     }

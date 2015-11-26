@@ -15,7 +15,7 @@ public abstract class Block implements Serializable {
     public Block(Point start, Point[][] rotate, int color)
     {
         rotation = 0;
-        position = start;
+        position = new Point(start);
         blockColor = color;
         rotations = rotate;
     }
