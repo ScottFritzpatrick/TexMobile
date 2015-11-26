@@ -1,6 +1,7 @@
 package ca.alexcomeau.texmobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,11 +16,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
     private GameThread thread;
     private GameManager game;
+    private Context context;
     private int pixels;
 
     public GameView(Context ctx, AttributeSet attrs)
     {
         super(ctx, attrs);
+        context = ctx;
         getHolder().addCallback(this);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
@@ -107,6 +110,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                                     paint);
                 }
             }
+        }
+
+        if(game.getGameOver() != null)
+        {
+            // Stop the thread
+            thread.setRunning(false);
+            // Draw a message
+            Paint paint = new Paint();
+            paint.setColor(Color.WHITE);
+            paint.setTextSize(pixels);
+            canvas.drawText(context.getString(R.string.gameover), pixels, pixels, paint);
+            canvas.drawText(context.getString(R.string.pressAny), pixels, pixels * 3, paint);
         }
     }
 }
