@@ -251,7 +251,6 @@ public class GameManager implements Parcelable {
     // Checks for clears, clears them if so, and adds to the score and level
     private void checkClears()
     {
-        Log.d("erzz", "checking for clears!?");
         int linesCleared = 0;
 
         // Get all the unique rows the block is spanning
@@ -260,7 +259,6 @@ public class GameManager implements Parcelable {
         {
             if (!toCheck.contains(c.y))
             {
-                Log.d("erzz", c.y + " definitely needs to be cleared");
                 toCheck.add(c.y);
             }
         }
@@ -310,7 +308,6 @@ public class GameManager implements Parcelable {
     // Generates a block of a random type.
     private Block generateNewBlock()
     {
-        Log.d("erzz", "generating a block!");
         switch((int) (Math.random() * 7))
         {
             case 0:

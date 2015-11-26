@@ -29,7 +29,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
         game = new GameManager();
         game.start(start, end);
-        this.pixels = 30;
+        this.pixels = 40;
     }
 
     @Override
@@ -72,52 +72,41 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     public void render(Canvas canvas)
     {
-        canvas.drawColor(Color.BLACK);
-        Paint paint = new Paint();
-        int[][] colors = game.getStack();
-        int countRow, countColumn;
-        countRow = 0;
-
-        // Paint the stack onto the canvas
-        for(int[] row : colors)
+        if(game.getRedraw())
         {
-            // The top two rows aren't displayed
-            if(countRow <= 20)
-            {
-                countColumn = 0;
-                for(int i : row)
+            canvas.drawColor(Color.BLACK);
+            Paint paint = new Paint();
+            int[][] colors = game.getStack();
+
+            // Paint the stack onto the canvas. Top two rows aren't drawn.
+            for (int i = 0; i <= 20; i++)
+                for (int j = 0; j < 10; j++)
                 {
-                    // The canvas is already black so we don't have to draw those boxes
-                    if(i != Color.BLACK)
-                    {
-                        paint.setColor(i);
-                        canvas.drawRect(countColumn * pixels, // Left
-                                canvas.getHeight() - (countRow * pixels) - pixels, // Top
-                                (countColumn * pixels) + pixels, // Right
-                                canvas.getHeight() - (countRow * pixels), // Bottom
-                                paint);
-                        // Next one over
-                        countColumn++;
-                    }
+                    paint.setColor(colors[i][j]);
+
+                    // The canvas is already black so we don't have to draw those.
+                    if (paint.getColor() != Color.BLACK)
+                        canvas.drawRect(j * pixels,                 // Left
+                                        (20 - i) * pixels - pixels, // Top
+                                        j * pixels + pixels,        // Right
+                                        (20 - i) * pixels,          // Bottom
+                                        paint);                     // Color
+                }
+
+            // Paint the active piece onto the canvas
+            Block currentPiece = game.getCurrentBlock();
+            if (currentPiece != null)
+            {
+                paint.setColor(currentPiece.getBlockColor());
+                for (Point coord : currentPiece.getAbsoluteCoordinates())
+                {
+                    canvas.drawRect(coord.x * pixels,
+                                    (20 - coord.y) * pixels - pixels,
+                                    coord.x * pixels + pixels,
+                                    (20 - coord.y) * pixels,
+                                    paint);
                 }
             }
-            countRow++;
         }
-
-        // Paint the active piece onto the canvas
-        Block currentPiece = game.getCurrentBlock();
-        if(currentPiece != null)
-        {
-            paint.setColor(currentPiece.getBlockColor());
-            for(Point coord : currentPiece.getAbsoluteCoordinates())
-            {
-                canvas.drawRect((9 - coord.x) * pixels,
-                        canvas.getHeight() - (coord.y * pixels) - pixels,
-                        ((9 - coord.x) * pixels) + pixels,
-                        canvas.getHeight() - (coord.y * pixels),
-                        paint);
-            }
-        }
-
     }
 }
