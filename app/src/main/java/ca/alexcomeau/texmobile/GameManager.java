@@ -3,6 +3,8 @@ package ca.alexcomeau.texmobile;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 import java.util.ArrayList;
 import ca.alexcomeau.texmobile.blocks.*;
 
@@ -53,6 +55,7 @@ public class GameManager implements Parcelable {
         addLevel(levelStart);
         combo = 1;
         gameOver = null;
+        currentBlock = generateNewBlock();
         nextBlock = generateNewBlock();
         elapsedFrames = 0;
 

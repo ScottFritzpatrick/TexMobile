@@ -11,7 +11,7 @@
         android:orientation="horizontal"
         android:layout_weight="8">
 
-        <SurfaceView
+        <ca.alexcomeau.texmobile.GameView
             android:layout_width="200dp"
             android:layout_height="400dp"
             android:layout_marginTop="5dp"

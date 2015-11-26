@@ -2,27 +2,22 @@ package ca.alexcomeau.texmobile;
 
 import android.content.Intent;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
-import ca.alexcomeau.texmobile.blocks.Block;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
-    private SurfaceView surfaceView;
+    private GameView gameView;
     private SurfaceHolder surfaceHolder;
     private TextView txtScore, txtLevel;
     private GameManager game;
-    // Rectangle width/height in dp
-    private float pixels;
+
     private Timer calcTimer;
 
     @Override
@@ -30,8 +25,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        surfaceView = (SurfaceView) findViewById(R.id.svBoard);
-        surfaceHolder = surfaceView.getHolder();
+        gameView = (GameView) findViewById(R.id.svBoard);
+        surfaceHolder = gameView.getHolder();
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtLevel = (TextView) findViewById(R.id.txtLevel);
 
@@ -48,16 +43,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             h = screenheight * 0.9;
 
         w = h * 0.5;
-        surfaceView.setLayoutParams(new android.widget.LinearLayout.LayoutParams((int) w, (int) h));
-        
+        //gameView.setLayoutParams(new android.widget.LinearLayout.LayoutParams((int) w, (int) h));
+
         // Convert from dp to pixels
-        pixels = (int)(h / 20) * getResources().getDisplayMetrics().density;
+        int pixels = (int)((h / 20) * getResources().getDisplayMetrics().density);
 
         if(savedInstanceState == null)
         {
-            game = new GameManager();
             Bundle myBundle = getIntent().getExtras();
-            game.start(myBundle.getInt("startLevel"), myBundle.getInt("endLevel"));
+            gameView.setupGame(myBundle.getInt("startLevel"), myBundle.getInt("endLevel"), pixels);
         }
         else
         {
@@ -99,50 +93,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void drawGame()
     {
         Canvas canvas = surfaceHolder.lockCanvas();
-        // Fill the canvas with black
-        canvas.drawColor(Color.BLUE);
-        Paint paint = new Paint();
-        int[][] colors = game.getStack();
-        int countRow, countColumn;
-        countRow = 0;
 
-        // Paint the stack onto the canvas
-        for(int[] row : colors)
-        {
-            // The first two rows aren't displayed
-            if(countRow > 1)
-            {
-                countColumn = 0;
-                for (int i : row)
-                {
-                    // The canvas is already black so we don't have to draw those boxes
-                    if (i != Color.BLACK)
-                    {
-                        paint.setColor(i);
-                        canvas.drawRect(countColumn * pixels, // Left
-                                        canvas.getHeight() - (countRow * pixels) - pixels, // Top
-                                        (countColumn * pixels) + pixels, // Right
-                                        canvas.getHeight() - (countRow * pixels), // Bottom
-                                        paint);
-                        // Next one over
-                        countColumn++;
-                    }
-                }
-            }
-            countRow++;
-        }
-
-        // Paint the active piece onto the canvas
-        Block currentPiece = game.getCurrentBlock();
-        paint.setColor(currentPiece.getBlockColor());
-        for(Point coord : currentPiece.getAbsoluteCoordinates())
-        {
-            canvas.drawRect(coord.x * pixels,
-                    canvas.getHeight() - (coord.y * pixels) - pixels,
-                    (coord.x * pixels) + pixels,
-                    canvas.getHeight() - (coord.y * pixels),
-                    paint);
-        }
 
         // Give the canvas back
         surfaceHolder.unlockCanvasAndPost(canvas);

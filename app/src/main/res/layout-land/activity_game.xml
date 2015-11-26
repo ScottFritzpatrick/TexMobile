@@ -38,14 +38,14 @@
         android:layout_height="match_parent"
         android:layout_weight="6"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:id="@+id/surface_layout">
 
-        <SurfaceView
+        <ca.alexcomeau.texmobile.GameView
             android:layout_width="160dp"
             android:layout_height="320dp"
-
             android:layout_marginStart="5dp"
-            android:id="@+id/svBoard" />
+            android:id="@+id/svBoard"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
