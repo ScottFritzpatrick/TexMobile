@@ -496,9 +496,9 @@ public class GameManager implements Parcelable {
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {
-        currentBlock = (Block) in.readValue(Block.class.getClassLoader());
-        nextBlock = (Block) in.readValue(Block.class.getClassLoader());
-        gameBoard = (Board) in.readValue(Board.class.getClassLoader());
+        currentBlock = in.readParcelable(Block.class.getClassLoader());
+        nextBlock = in.readParcelable(Block.class.getClassLoader());
+        gameBoard = in.readParcelable(Board.class.getClassLoader());
         level = in.readInt();
         score = in.readInt();
         lockCurrent = in.readInt();
@@ -509,7 +509,7 @@ public class GameManager implements Parcelable {
         movementWait = in.readInt();
         elapsedFrames = in.readInt();
         if (in.readByte() == 0x01) {
-            history = new LinkedList<Integer>();
+            history = new LinkedList<>();
             in.readList(history, Integer.class.getClassLoader());
         } else {
             history = null;
@@ -533,9 +533,9 @@ public class GameManager implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(currentBlock);
-        dest.writeValue(nextBlock);
-        dest.writeValue(gameBoard);
+        dest.writeParcelable(currentBlock, 0);
+        dest.writeParcelable(nextBlock, 0);
+        dest.writeParcelable(gameBoard, 0);
         dest.writeInt(level);
         dest.writeInt(score);
         dest.writeInt(lockCurrent);

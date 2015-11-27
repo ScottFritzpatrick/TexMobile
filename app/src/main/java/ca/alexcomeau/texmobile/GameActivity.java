@@ -47,6 +47,8 @@ public class GameActivity extends AppCompatActivity implements Serializable{
                         switch(event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
                                 input = v.getTag().toString();
+                                if(gameView.getGame().getGameOver() != null)
+                                    gameOver();
                                 return true;
                             case MotionEvent.ACTION_UP:
                                 input = "";
@@ -96,6 +98,25 @@ public class GameActivity extends AppCompatActivity implements Serializable{
         outState.putParcelable("game", gameView.getGame());
     }
 
+    private void gameOver()
+    {
+        // Check if it's a new high score
+        ScoreDBManager scores = new ScoreDBManager(this);
+        scores.open();
+        int lowestScore = scores.getLowestScore();
+        scores.close();
+
+        if(gameView.getGame().getScore() > lowestScore)
+        {
+            Intent intent = new Intent("ca.alexcomeau.texmobile.EnterScore");
+            startActivityForResult(intent, 1);
+        }
+
+        Intent intent = new Intent("ca.alexcomeau.texmobile.HighScores");
+        finish();
+        startActivity(intent);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -111,6 +132,7 @@ public class GameActivity extends AppCompatActivity implements Serializable{
 
             // Write the high score to the database
             ScoreDBManager scores = new ScoreDBManager(this);
+            scores.open();
             scores.writeScore(data.getStringExtra("name"), game.getScore(), time, game.getGrade());
             scores.close();
         }

@@ -43,7 +43,7 @@ public class ScoreDBManager {
 
     public boolean writeScore(String name, int score, String time, String grade)
     {
-        if(db == null) open();
+        if(db == null) return false;
 
         ContentValues values = new ContentValues();
         values.put("name", name);
@@ -60,7 +60,7 @@ public class ScoreDBManager {
         try {
             cursor = null;
 
-            if(db == null) open();
+            if(db == null) return 0;
 
             cursor = db.rawQuery("SELECT MIN(score) FROM tblScores", null);
 
@@ -79,9 +79,10 @@ public class ScoreDBManager {
         try {
             cursor = null;
 
-            if(db == null) open();
+            if(db == null) return null;
 
-            cursor = db.rawQuery("SELECT * FROM tblScores ORDER BY score DESC, time ASC, grade DESC, name ASC", null);
+            // Highest score, then lowest time
+            cursor = db.rawQuery("SELECT * FROM tblScores ORDER BY score DESC, duration ASC", null);
 
             while (cursor.moveToNext())
             {

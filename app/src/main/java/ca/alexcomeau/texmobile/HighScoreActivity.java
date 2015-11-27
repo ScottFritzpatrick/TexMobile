@@ -16,6 +16,7 @@ public class HighScoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scores);
 
         ScoreDBManager scoreManager = new ScoreDBManager(this);
+        scoreManager.open();
         List<Score> scores = scoreManager.getAllScores();
         scoreManager.close();
 
@@ -33,7 +34,7 @@ public class HighScoreActivity extends AppCompatActivity {
             txtName.setLayoutParams(new TableRow.LayoutParams(1));
 
             TextView txtScore = new TextView(this);
-            txtScore.setText(s.score);
+            txtScore.setText(s.score + "");
             txtScore.setLayoutParams(new TableRow.LayoutParams(2));
 
             TextView txtTime = new TextView(this);

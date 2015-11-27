@@ -3,7 +3,10 @@ package ca.alexcomeau.texmobile;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Bundle the database if it isn't already.
-        DatabaseBundler dbBundle = new DatabaseBundler(getPackageName(), getBaseContext());
+        DatabaseBundler dbBundle = new DatabaseBundler(this);
         dbBundle.bundle("scoresdb");
     }
 
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO: Add a drop down or something to select the starting level.
         intent.putExtra("startLevel", 0);
         intent.putExtra("maxLevel", Integer.parseInt(v.getTag().toString()));
+        finish();
         startActivity(intent);
     }
 }
