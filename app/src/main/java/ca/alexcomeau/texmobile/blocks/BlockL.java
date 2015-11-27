@@ -10,16 +10,15 @@ public class BlockL extends Block {
     {
         super(start,
               new Point[][]{
-                      {new Point(0,2),new Point(1,2),new Point(0,1),new Point(2,2)},
-                      {new Point(1,1),new Point(1,2),new Point(1,3),new Point(0,3)},
-                      {new Point(0,1),new Point(1,1),new Point(2,2),new Point(2,1)},
-                      {new Point(1,1),new Point(1,2),new Point(1,3),new Point(2,1)}
+                      {new Point(0,2),new Point(1,2),new Point(2,2),new Point(0,1)},
+                      {new Point(1,3),new Point(0,3),new Point(1,2),new Point(1,1)},
+                      {new Point(2,2),new Point(0,1),new Point(1,1),new Point(2,1)},
+                      {new Point(1,3),new Point(1,2),new Point(1,1),new Point(2,1)}
               },
               Color.rgb(255,165,0)); // Orange
     }
 
-    protected BlockL(Parcel in)
-    {
+    protected BlockL(Parcel in) {
         super(in);
     }
 

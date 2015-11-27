@@ -8,7 +8,7 @@ public abstract class Block implements Parcelable {
     protected int rotation;
     protected Point position;
     protected int blockColor;
-    // Nested arrays should be based on a 4x4 grid. Order doesn't really matter.
+    // Nested arrays should be based on a 4x4 grid. Points need to be in descending order based on y.
     protected Point[][] rotations;
 
     public Block(Point start, Point[][] rotate, int color)

@@ -3,9 +3,8 @@ package ca.alexcomeau.texmobile;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import ca.alexcomeau.texmobile.blocks.*;
 
@@ -15,7 +14,7 @@ public class GameManager implements Parcelable {
     private Board gameBoard;
     private int level;
     private int score;
-    private int lockCurrent;
+    private int lockWait;
     private int droppedLines;
     private int combo;
     private int spawnWait;
@@ -63,7 +62,7 @@ public class GameManager implements Parcelable {
         redraw = true;
         elapsedFrames = 0;
         spawnWait = 0;
-        lockCurrent = LOCK_DELAY;
+        lockWait = LOCK_DELAY;
         autoShiftWait = 0;
         fallWait = 0;
         lastInput = "";
@@ -162,7 +161,7 @@ public class GameManager implements Parcelable {
             // Check if the block is currently in a state of falling
             if (gameBoard.checkDown(currentBlock))
             {
-                lockCurrent = LOCK_DELAY;
+                lockWait = LOCK_DELAY;
                 // Move the block down if enough time has passed
                 if (gravity > 0)
                     if (fallWait++ >= gravity)
@@ -182,10 +181,10 @@ public class GameManager implements Parcelable {
             else
             {
                 // Check if the block needs to be locked
-                if (lockCurrent-- <= 0)
+                if (lockWait++ >= LOCK_DELAY)
                 {
                     gameBoard.lockBlock(currentBlock);
-                    lockCurrent = LOCK_DELAY;
+                    lockWait = LOCK_DELAY;
                     // Check if locking that piece caused any lines to be cleared
                     checkClears();
                     currentBlock = null;
@@ -204,6 +203,8 @@ public class GameManager implements Parcelable {
             droppedLines++;
             redraw = true;
         }
+
+        lockWait = LOCK_DELAY;
     }
 
     private void moveLeft()
@@ -279,27 +280,16 @@ public class GameManager implements Parcelable {
         // Get all the unique rows the block is spanning
         ArrayList<Integer> toCheck = new ArrayList<>();
         for(Point c : currentBlock.getAbsoluteCoordinates())
-        {
             if (!toCheck.contains(c.y))
-            {
                 toCheck.add(c.y);
-                Log.d("erzz", "added " + c.y);
-            }
-        }
-
-        // Sort it in descending order so it's checked from top to bottom.
-        Collections.sort(toCheck, Collections.reverseOrder());
 
         // Check each of those rows
         for(Integer i : toCheck)
-        {
             if (gameBoard.checkLine(i))
             {
-                // animations later?
                 gameBoard.clearLine(i);
                 linesCleared++;
             }
-        }
 
         if(linesCleared > 0)
         {
@@ -511,7 +501,7 @@ public class GameManager implements Parcelable {
         gameBoard = in.readParcelable(Board.class.getClassLoader());
         level = in.readInt();
         score = in.readInt();
-        lockCurrent = in.readInt();
+        lockWait = in.readInt();
         droppedLines = in.readInt();
         combo = in.readInt();
         spawnWait = in.readInt();
@@ -548,7 +538,7 @@ public class GameManager implements Parcelable {
         dest.writeParcelable(gameBoard, 0);
         dest.writeInt(level);
         dest.writeInt(score);
-        dest.writeInt(lockCurrent);
+        dest.writeInt(lockWait);
         dest.writeInt(droppedLines);
         dest.writeInt(combo);
         dest.writeInt(spawnWait);
