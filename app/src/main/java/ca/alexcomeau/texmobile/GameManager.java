@@ -20,8 +20,9 @@ public class GameManager implements Parcelable {
     private int combo;
     private int spawnWait;
     private int fallWait;
-    private int movementWait;
+    private int autoShiftWait;
     private int elapsedFrames;
+    private String lastInput;
     private LinkedList<Integer> history;
     private boolean grandmasterValid;
     private boolean check1;
@@ -43,8 +44,8 @@ public class GameManager implements Parcelable {
     private final Point START = new Point(3,17);
     // Pieces are spawned SPAWN_DELAY frames after a piece is locked.
     private final int SPAWN_DELAY = 15;
-    // Inputs are taken every MOVEMENT_DELAY frames.
-    private final int MOVEMENT_DELAY = 2;
+    // Frames to wait before allowing consecutive duplicate inputs
+    private final int AUTO_SHIFT_DELAY = 7;
 
     public GameManager(){ }
 
@@ -63,8 +64,9 @@ public class GameManager implements Parcelable {
         elapsedFrames = 0;
         spawnWait = 0;
         lockCurrent = LOCK_DELAY;
-        movementWait = 0;
+        autoShiftWait = 0;
         fallWait = 0;
+        lastInput = "";
 
         // Start the history full of Zs.
         history = new LinkedList<>();
@@ -87,10 +89,10 @@ public class GameManager implements Parcelable {
     // Move ahead a frame
     public void advanceFrame(String input)
     {
-        elapsedFrames++;
-
         // No point evaluating movement and such if there's no piece to manipulate.
         boolean downtime = false;
+        redraw = false;
+        elapsedFrames++;
 
         // If a block was placed last frame, swap it for the next one and generate a new next.
         if(currentBlock == null)
@@ -107,8 +109,6 @@ public class GameManager implements Parcelable {
 
                 spawnWait = 0;
                 fallWait = 0;
-                // Let them move on the frame it appears
-                movementWait = MOVEMENT_DELAY;
 
                 // A new block appearing increases the level by one, unless the level ends in 99 or is the second last
                 if (!((level + 1) % 100 == 0 || level == maxLevel - 1))
@@ -120,33 +120,43 @@ public class GameManager implements Parcelable {
 
         if(!downtime)
         {
-            droppedLines = 0;
+            droppedLines = 1;
 
-            // Manipulate the block according to the user's input.
-            if (movementWait++ >= MOVEMENT_DELAY)
+            // Check if the received input is the same as last frame
+            if(input.equals(lastInput))
             {
-                movementWait = 0;
-
-                switch (input)
+                // If so, wait some frames before accepting it again to avoid unintentional doubled inputs
+                if(autoShiftWait < AUTO_SHIFT_DELAY && !input.equals(""))
                 {
-                    case "drop":
-                        drop();
-                        break;
-                    case "left":
-                        moveLeft();
-                        break;
-                    case "right":
-                        moveRight();
-                        break;
-                    case "rotateLeft":
-                        rotateLeft();
-                        break;
-                    case "rotateRight":
-                        rotateRight();
-                        break;
-                    default:
-                        break;
+                    autoShiftWait++;
+                    input = "";
                 }
+            }
+            else
+            {
+                lastInput = input;
+                autoShiftWait = 0;
+            }
+
+            switch (input)
+            {
+                case "drop":
+                    drop();
+                    break;
+                case "left":
+                    moveLeft();
+                    break;
+                case "right":
+                    moveRight();
+                    break;
+                case "rotateLeft":
+                    rotateLeft();
+                    break;
+                case "rotateRight":
+                    rotateRight();
+                    break;
+                default:
+                    break;
             }
 
             // Check if the block is currently in a state of falling
@@ -159,11 +169,15 @@ public class GameManager implements Parcelable {
                     {
                         fallWait = 0;
                         currentBlock.moveDown();
+                        redraw = true;
                     }
                     else
                         for (int i = 0; i < superGravity; i++)
                             if (gameBoard.checkDown(currentBlock))
+                            {
                                 currentBlock.moveDown();
+                                redraw = true;
+                            }
             }
             else
             {
@@ -183,13 +197,12 @@ public class GameManager implements Parcelable {
     // ===== Input handling methods ==========================================
     private void drop()
     {
-        // Count the number of lines the piece falls, but always at least one for scoring purposes
-        droppedLines = 1;
-
+        // Count the number of lines the piece falls
         while(gameBoard.checkDown(currentBlock))
         {
             currentBlock.moveDown();
             droppedLines++;
+            redraw = true;
         }
     }
 
@@ -323,7 +336,7 @@ public class GameManager implements Parcelable {
     // Generates a block of a random type.
     private Block generateNewBlock(int i)
     {
-        // Take out the oldest enement of history and add in this one
+        // Take out the oldest element of history and add in this one
         history.remove();
         history.add(i);
 
@@ -503,7 +516,7 @@ public class GameManager implements Parcelable {
         combo = in.readInt();
         spawnWait = in.readInt();
         fallWait = in.readInt();
-        movementWait = in.readInt();
+        autoShiftWait = in.readInt();
         elapsedFrames = in.readInt();
         if (in.readByte() == 0x01) {
             history = new LinkedList<>();
@@ -540,7 +553,7 @@ public class GameManager implements Parcelable {
         dest.writeInt(combo);
         dest.writeInt(spawnWait);
         dest.writeInt(fallWait);
-        dest.writeInt(movementWait);
+        dest.writeInt(autoShiftWait);
         dest.writeInt(elapsedFrames);
         if (history == null) {
             dest.writeByte((byte) (0x00));

@@ -130,7 +130,11 @@ public class GameActivity extends AppCompatActivity implements Serializable{
             // Convert the frames to minutes and seconds
             String time;
             int seconds = game.getFrames() / 30; // 30 frames per second
-            time = (seconds / 60) + ":" + (seconds % 60);
+
+            if(Integer.toString(seconds % 60).length() == 1)
+                time = (seconds / 60) + ":0" + (seconds % 60);
+            else
+                time = (seconds / 60) + ":" + (seconds % 60);
 
             // Write the high score to the database
             ScoreDBManager scores = new ScoreDBManager(this);

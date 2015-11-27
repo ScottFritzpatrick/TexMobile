@@ -41,16 +41,16 @@ public class GameThread extends Thread
 
             try
             {
-                canvas = surfaceHolder.lockCanvas();
+                beginTime = System.currentTimeMillis();
+                framesSkipped = 0;
+
+                // Do the game maths
+                gameView.update();
+
+                // Do the game arts if needed
+                if(gameView.getRedraw()) canvas = surfaceHolder.lockCanvas();
                 synchronized(surfaceHolder)
                 {
-                    beginTime = System.currentTimeMillis();
-                    framesSkipped = 0;
-
-                    // Do the game maths
-                    gameView.update();
-
-                    // Do the game arts
                     gameView.render(canvas);
 
                     // How long did that take?
