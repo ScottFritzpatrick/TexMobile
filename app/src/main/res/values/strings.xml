@@ -26,4 +26,5 @@
     <string name="hsScore">Score</string>
     <string name="hsTime">Time</string>
     <string name="hsGrade">Grade</string>
+    <string name="back">Back to Menu</string>
 </resources>

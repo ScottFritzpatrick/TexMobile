@@ -107,6 +107,7 @@ public class GameManager implements Parcelable {
 
                 spawnWait = 0;
                 fallWait = 0;
+                gravity = 0;
                 // Let them move on the frame it appears
                 movementWait = MOVEMENT_DELAY;
 
@@ -175,7 +176,6 @@ public class GameManager implements Parcelable {
                     // Check if locking that piece caused any lines to be cleared
                     checkClears();
                     currentBlock = null;
-                    spawnWait = 0;
                 }
             }
         }
@@ -192,9 +192,6 @@ public class GameManager implements Parcelable {
             currentBlock.moveDown();
             droppedLines++;
         }
-
-        // Set the current lock delay to one, making the piece lock immediately
-        lockCurrent = 1;
     }
 
     private void moveLeft()

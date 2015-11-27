@@ -92,10 +92,10 @@ public class Board implements Parcelable {
     public boolean checkLine(int line)
     {
         Log.d("erzz", "checking a line!");
-        for(int i : stack[line])
+        for(int col : stack[line])
         {
             // Check each cell in the specified row. If black is found, that means there is an empty cell.
-            if (i == Color.BLACK)
+            if (col == Color.BLACK)
                 return false;
         }
         return true;
@@ -121,7 +121,10 @@ public class Board implements Parcelable {
         Log.d("erzz", "locking a block!");
         // Color in the places the block is over
         for(Point c : block.getAbsoluteCoordinates())
+        {
+            Log.d("erzz", "locking x=" + c.x + " y=" + c.y);
             stack[c.y][c.x] = block.getBlockColor();
+        }
     }
 
     public int[][] getStack() { return stack; }

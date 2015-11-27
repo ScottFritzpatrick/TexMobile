@@ -1,7 +1,9 @@
 package ca.alexcomeau.texmobile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ public class HighScoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
 
+        // Get all the scores
         ScoreDBManager scoreManager = new ScoreDBManager(this);
         scoreManager.open();
         List<Score> scores = scoreManager.getAllScores();
@@ -52,5 +55,14 @@ public class HighScoreActivity extends AppCompatActivity {
 
             tl.addView(row);
         }
+    }
+
+    public void btnBackClick(View v)
+    {
+        // Back to the main menu.
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        finish();
+        startActivity(intent);
     }
 }

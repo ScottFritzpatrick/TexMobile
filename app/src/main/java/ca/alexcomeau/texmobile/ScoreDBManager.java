@@ -50,7 +50,7 @@ public class ScoreDBManager {
         values.put("score", score);
         values.put("duration", time);
         values.put("grade", grade);
-        db.insert("tblGames", null, values);
+        db.insert("tblScores", null, values);
 
         return true;
     }

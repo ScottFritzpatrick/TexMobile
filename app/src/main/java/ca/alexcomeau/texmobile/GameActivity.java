@@ -111,10 +111,12 @@ public class GameActivity extends AppCompatActivity implements Serializable{
             Intent intent = new Intent("ca.alexcomeau.texmobile.EnterScore");
             startActivityForResult(intent, 1);
         }
-
-        Intent intent = new Intent("ca.alexcomeau.texmobile.HighScores");
-        finish();
-        startActivity(intent);
+        else
+        {
+            Intent intent = new Intent("ca.alexcomeau.texmobile.HighScores");
+            finish();
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -135,6 +137,10 @@ public class GameActivity extends AppCompatActivity implements Serializable{
             scores.open();
             scores.writeScore(data.getStringExtra("name"), game.getScore(), time, game.getGrade());
             scores.close();
+
+            Intent intent = new Intent("ca.alexcomeau.texmobile.HighScores");
+            finish();
+            startActivity(intent);
         }
     }
 
