@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@android:style/Theme.NoTitleBar"
     android:baselineAligned="false">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
         android:orientation="vertical"
+        android:id="@+id/leftControls"
+        android:layout_alignParentStart="true"
         style="?android:buttonBarStyle">
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/btnDrop1"
-            android:tag="drop"
-            android:text="D"
+            android:id="@+id/btnRotateLeft"
+            android:tag="rotateLeft"
+            android:text="rL"
             style="?android:buttonBarButtonStyle"/>
 
         <Button
@@ -33,18 +34,19 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/btnRotateLeft"
-            android:tag="rotateLeft"
-            android:text="rL"
+            android:id="@+id/btnDrop1"
+            android:tag="drop"
+            android:text="D"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="6"
         android:orientation="horizontal"
         android:gravity="center"
+        android:layout_toEndOf="@+id/leftControls"
+        android:layout_toStartOf="@+id/rightControls"
         android:id="@+id/surface_layout">
 
         <ca.alexcomeau.texmobile.GameView
@@ -90,18 +92,19 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
         android:orientation="vertical"
+        android:id="@+id/rightControls"
+        android:layout_alignParentEnd="true"
         style="?android:buttonBarStyle">
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/btnDrop2"
-            android:tag="drop"
-            android:text="D"
+            android:id="@+id/btnRotateRight"
+            android:tag="rotateRight"
+            android:text="rR"
             style="?android:buttonBarButtonStyle"/>
 
         <Button
@@ -117,10 +120,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/btnRotateRight"
-            android:tag="rotateRight"
-            android:text="rR"
+            android:id="@+id/btnDrop2"
+            android:tag="drop"
+            android:text="D"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

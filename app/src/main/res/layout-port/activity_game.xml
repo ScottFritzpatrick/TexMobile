@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@android:style/Theme.NoTitleBar">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
-        android:layout_weight="8">
+        android:layout_above="@+id/controls">
 
         <ca.alexcomeau.texmobile.GameView
             android:layout_width="200dp"
@@ -55,11 +55,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="100dp"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:layout_weight="2"
-        style="?android:buttonBarStyle">
+        android:id="@+id/controls"
+        style="?android:buttonBarStyle"
+        android:layout_alignParentBottom="true">
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -106,4 +107,4 @@
             android:id="@+id/btnDrop2"/>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
