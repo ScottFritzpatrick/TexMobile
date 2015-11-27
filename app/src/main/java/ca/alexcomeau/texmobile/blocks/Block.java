@@ -1,11 +1,10 @@
 package ca.alexcomeau.texmobile.blocks;
 
 import android.graphics.Point;
-import android.util.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.io.Serializable;
-
-public abstract class Block implements Serializable {
+public abstract class Block implements Parcelable {
     protected int rotation;
     protected Point position;
     protected int blockColor;
@@ -56,4 +55,25 @@ public abstract class Block implements Serializable {
     public int getBlockColor() { return blockColor; }
     public Point getPosition() { return position; }
     public Point[] getRelativeCoordinates() { return rotations[rotation]; }
+
+    // ===== Parcelable Stuff ====================================================
+    protected Block(Parcel in) {
+        rotation = in.readInt();
+        position = (Point) in.readValue(Point.class.getClassLoader());
+        blockColor = in.readInt();
+        rotations = (Point[][]) in.readSerializable();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(rotation);
+        dest.writeValue(position);
+        dest.writeInt(blockColor);
+        dest.writeSerializable(rotations);
+    }
 }

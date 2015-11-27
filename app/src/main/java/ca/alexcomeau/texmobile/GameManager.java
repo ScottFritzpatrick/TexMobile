@@ -10,7 +10,8 @@ import java.util.LinkedList;
 import ca.alexcomeau.texmobile.blocks.*;
 
 public class GameManager implements Parcelable {
-    private Block currentBlock, nextBlock;
+    private Block currentBlock;
+    private Block nextBlock;
     private Board gameBoard;
     private int level;
     private int score;
@@ -22,7 +23,10 @@ public class GameManager implements Parcelable {
     private int movementWait;
     private int elapsedFrames;
     private LinkedList<Integer> history;
-    private boolean grandmasterValid, check1, check2, check3;
+    private boolean grandmasterValid;
+    private boolean check1;
+    private boolean check2;
+    private boolean check3;
     private boolean redraw;
     private Boolean gameOver;
 
@@ -492,24 +496,31 @@ public class GameManager implements Parcelable {
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {
-        gameBoard = (Board) in.readParcelable(Board.class.getClassLoader());
-        currentBlock = (Block) in.readSerializable();
-        nextBlock = (Block) in.readSerializable();
+        currentBlock = (Block) in.readValue(Block.class.getClassLoader());
+        nextBlock = (Block) in.readValue(Block.class.getClassLoader());
+        gameBoard = (Board) in.readValue(Board.class.getClassLoader());
         level = in.readInt();
         score = in.readInt();
         lockCurrent = in.readInt();
         droppedLines = in.readInt();
         combo = in.readInt();
-        gameOver = in.readByte() != 0x00;
         spawnWait = in.readInt();
         fallWait = in.readInt();
         movementWait = in.readInt();
         elapsedFrames = in.readInt();
-        redraw = in.readByte() != 0x00;
+        if (in.readByte() == 0x01) {
+            history = new LinkedList<Integer>();
+            in.readList(history, Integer.class.getClassLoader());
+        } else {
+            history = null;
+        }
         grandmasterValid = in.readByte() != 0x00;
         check1 = in.readByte() != 0x00;
         check2 = in.readByte() != 0x00;
         check3 = in.readByte() != 0x00;
+        redraw = in.readByte() != 0x00;
+        byte gameOverVal = in.readByte();
+        gameOver = gameOverVal == 0x02 ? null : gameOverVal != 0x00;
         gravity = in.readInt();
         superGravity = in.readInt();
         maxLevel = in.readInt();
@@ -522,24 +533,34 @@ public class GameManager implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(gameBoard, 0);
-        dest.writeSerializable(currentBlock);
-        dest.writeSerializable(nextBlock);
+        dest.writeValue(currentBlock);
+        dest.writeValue(nextBlock);
+        dest.writeValue(gameBoard);
         dest.writeInt(level);
         dest.writeInt(score);
         dest.writeInt(lockCurrent);
         dest.writeInt(droppedLines);
         dest.writeInt(combo);
-        dest.writeByte((byte) (gameOver ? 0x01 : 0x00));
         dest.writeInt(spawnWait);
         dest.writeInt(fallWait);
         dest.writeInt(movementWait);
         dest.writeInt(elapsedFrames);
-        dest.writeByte((byte) (redraw ? 0x01 : 0x00));
+        if (history == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(history);
+        }
         dest.writeByte((byte) (grandmasterValid ? 0x01 : 0x00));
         dest.writeByte((byte) (check1 ? 0x01 : 0x00));
         dest.writeByte((byte) (check2 ? 0x01 : 0x00));
         dest.writeByte((byte) (check3 ? 0x01 : 0x00));
+        dest.writeByte((byte) (redraw ? 0x01 : 0x00));
+        if (gameOver == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (gameOver ? 0x01 : 0x00));
+        }
         dest.writeInt(gravity);
         dest.writeInt(superGravity);
         dest.writeInt(maxLevel);

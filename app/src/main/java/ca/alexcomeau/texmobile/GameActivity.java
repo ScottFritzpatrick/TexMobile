@@ -13,12 +13,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameActivity extends AppCompatActivity{
+public class GameActivity extends AppCompatActivity implements Serializable{
     private GameView gameView;
     private String input;
 
@@ -78,13 +79,14 @@ public class GameActivity extends AppCompatActivity{
         }
         else
         {
-            //TODO: unparcel
+            gameView.setupGame((GameManager) savedInstanceState.getParcelable("game"), this);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
+        outState.putParcelable("game", gameView.getGame());
     }
 
     @Override

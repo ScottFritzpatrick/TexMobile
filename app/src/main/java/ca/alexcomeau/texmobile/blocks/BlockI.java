@@ -2,6 +2,8 @@ package ca.alexcomeau.texmobile.blocks;
 
 import android.graphics.Color;
 import android.graphics.Point;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 public class BlockI extends Block {
     public BlockI(Point start)
@@ -13,4 +15,19 @@ public class BlockI extends Block {
               },
               Color.RED);
     }
+
+    protected BlockI(Parcel in)
+    {
+        super(in);
+    }
+
+    public static final Parcelable.Creator<BlockI> CREATOR = new Parcelable.Creator<BlockI>() {
+        public BlockI createFromParcel(Parcel in) {
+            return new BlockI(in);
+        }
+
+        public BlockI[] newArray(int size) {
+            return new BlockI[size];
+        }
+    };
 }

@@ -1,18 +1,17 @@
 package ca.alexcomeau.texmobile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
-
+import java.io.Serializable;
 import ca.alexcomeau.texmobile.blocks.Block;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
@@ -40,14 +39,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
         game = new GameManager();
         game.start(start, end);
+
+        setupGame(game, activity);
+    }
+
+    public void setupGame(GameManager game, GameActivity activity)
+    {
+        this.game = game;
         this.activity = activity;
 
         txtScore = (TextView) activity.findViewById(R.id.txtScore);
         txtLevel = (TextView) activity.findViewById(R.id.txtLevel);
 
         gameStarted = true;
-
     }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder)
@@ -130,8 +136,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                 }
             }
 
-            Log.d("erzz", "level: " + game.getLevel());
-
             // Update the text views
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -163,8 +167,5 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    public GameManager getGame()
-    {
-        return game;
-    }
+    public GameManager getGame() { return game; }
 }
