@@ -61,7 +61,11 @@ public abstract class Block implements Parcelable {
         rotation = in.readInt();
         position = (Point) in.readValue(Point.class.getClassLoader());
         blockColor = in.readInt();
-        rotations = (Point[][]) in.readSerializable();
+        int length = in.readInt();
+        rotations = new Point[length][4];
+
+        for(int i = 0; i < length; i++)
+            rotations[i] = (Point[]) in.readArray(Point.class.getClassLoader());
     }
 
     @Override
@@ -74,6 +78,8 @@ public abstract class Block implements Parcelable {
         dest.writeInt(rotation);
         dest.writeValue(position);
         dest.writeInt(blockColor);
-        dest.writeSerializable(rotations);
+        dest.writeInt(rotations.length);
+        for(Point[] p : rotations)
+            dest.writeArray(p);
     }
 }

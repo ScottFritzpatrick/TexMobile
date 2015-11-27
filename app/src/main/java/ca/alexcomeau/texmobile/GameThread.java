@@ -66,7 +66,7 @@ public class GameThread extends Thread
                         try
                         {
                             Thread.sleep(sleepTime);
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) { return; }
                     }
 
                     while(sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS)
