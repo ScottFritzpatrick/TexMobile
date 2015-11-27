@@ -6,6 +6,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.util.Arrays;
+
 import ca.alexcomeau.texmobile.blocks.Block;
 
 
@@ -110,7 +112,8 @@ public class Board implements Parcelable {
             stack[line][j] = Color.BLACK;
 
         // Lower all the other lines by copying the lines above them
-        System.arraycopy(stack, line + 1, stack, line, stack.length - line - 1);
+        for(int k = line; k < 21; k++)
+            System.arraycopy(stack[k + 1], 0, stack[k], 0, 10);
 
         // The top row will always be all black, blocks cannot be placed there
     }
@@ -129,7 +132,7 @@ public class Board implements Parcelable {
 
     public int[][] getStack() { return stack; }
 
-    public boolean equals(Board other) { return stack.equals(other.getStack()); }
+    public boolean equals(Board other) { return Arrays.equals(stack, other.getStack()); }
 
     // ===== Parcelable Stuff ============================
     protected Board(Parcel in) {

@@ -107,7 +107,6 @@ public class GameManager implements Parcelable {
 
                 spawnWait = 0;
                 fallWait = 0;
-                gravity = 0;
                 // Let them move on the frame it appears
                 movementWait = MOVEMENT_DELAY;
 
@@ -300,7 +299,8 @@ public class GameManager implements Parcelable {
             score += (Math.ceil((level + linesCleared) / 4) + droppedLines)
                     * linesCleared * ((linesCleared * 2) - 1)
                     * combo * bravo;
-            level += linesCleared;
+
+            addLevel(linesCleared);
 
             // The game ends once the max level is reached.
             if(level >= maxLevel)
