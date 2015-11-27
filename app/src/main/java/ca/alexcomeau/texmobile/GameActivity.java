@@ -31,6 +31,17 @@ public class GameActivity extends AppCompatActivity implements Serializable{
         input = "";
         gameView = (GameView) findViewById(R.id.svBoard);
 
+        if(savedInstanceState == null)
+        {
+            Intent intent = getIntent();
+            gameView.setupGame(intent.getIntExtra("startLevel", 0), intent.getIntExtra("maxLevel", 999), this);
+        }
+        else
+        {
+            gameView.setupGame((GameManager) savedInstanceState.getParcelable("game"), this);
+        }
+
+        // Wire up all the buttons
         List<Button> btns = new ArrayList<>();
         btns.add((Button) findViewById(R.id.btnDrop1));
         btns.add((Button) findViewById(R.id.btnDrop2));
@@ -40,23 +51,23 @@ public class GameActivity extends AppCompatActivity implements Serializable{
         btns.add((Button) findViewById(R.id.btnRotateRight));
 
         for(Button b : btns)
-                b.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event)
-                    {
-                        switch(event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                input = v.getTag().toString();
-                                if(gameView.getGame().getGameOver() != null)
-                                    gameOver();
-                                return true;
-                            case MotionEvent.ACTION_UP:
-                                input = "";
-                                return true;
-                        }
-                        return false;
+            b.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    switch(event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            input = v.getTag().toString();
+                            if(gameView.getGame().getGameOver() != null)
+                                gameOver();
+                            return true;
+                        case MotionEvent.ACTION_UP:
+                            input = "";
+                            return true;
                     }
-                });
+                    return false;
+                }
+            });
 
         // Make the canvas fill the screen
         /*Display display = getWindowManager().getDefaultDisplay();
@@ -73,16 +84,6 @@ public class GameActivity extends AppCompatActivity implements Serializable{
         w = h * 0.5;
         gameView.setLayoutParams(new android.widget.LinearLayout.LayoutParams((int) w, (int) h));
         */
-
-        if(savedInstanceState == null)
-        {
-            Intent intent = getIntent();
-            gameView.setupGame(intent.getIntExtra("startLevel", 0), intent.getIntExtra("endLevel", 999), this);
-        }
-        else
-        {
-            gameView.setupGame((GameManager) savedInstanceState.getParcelable("game"), this);
-        }
     }
 
     @Override
