@@ -1,7 +1,6 @@
 package ca.alexcomeau.texmobile;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,9 +10,7 @@ import java.io.InputStream;
 public class DatabaseBundler {
     Context baseContext;
 
-    public DatabaseBundler(Context base) {
-        baseContext = base;
-    }
+    public DatabaseBundler(Context base) { baseContext = base; }
 
     public boolean bundle(String dbName)
     {

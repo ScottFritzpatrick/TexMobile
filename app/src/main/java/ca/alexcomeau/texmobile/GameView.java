@@ -5,13 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
-import java.io.Serializable;
 import ca.alexcomeau.texmobile.blocks.Block;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback

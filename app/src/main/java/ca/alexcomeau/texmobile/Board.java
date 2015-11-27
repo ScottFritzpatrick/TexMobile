@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.util.Arrays;
 
