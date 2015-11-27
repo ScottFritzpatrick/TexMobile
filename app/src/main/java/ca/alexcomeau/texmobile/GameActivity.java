@@ -84,6 +84,13 @@ public class GameActivity extends AppCompatActivity implements Serializable{
     }
 
     @Override
+    protected void onPause()
+    {
+        super.onPause();
+        gameView.stop();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState)
     {
         outState.putParcelable("game", gameView.getGame());

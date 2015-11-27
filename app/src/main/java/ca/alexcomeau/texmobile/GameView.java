@@ -168,4 +168,5 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public GameManager getGame() { return game; }
+    public void stop() { thread.setRunning(false); }
 }
