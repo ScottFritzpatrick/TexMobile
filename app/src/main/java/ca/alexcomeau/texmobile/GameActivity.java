@@ -29,7 +29,13 @@ public class GameActivity extends AppCompatActivity implements Serializable{
         gameView = (GameView) findViewById(R.id.svBoard);
         mp = MediaPlayer.create(this, R.raw.all_of_us);
         mp.setVolume(0.5f, 0.5f);
-        mp.setLooping(true);
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mediaplayer)
+            {
+                mediaplayer = MediaPlayer.create(getBaseContext(), R.raw.all_of_us);
+                mediaplayer.start();
+            }
+        });
 
         if(savedInstanceState == null)
         {

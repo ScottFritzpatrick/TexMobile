@@ -25,9 +25,16 @@ public class MainActivity extends AppCompatActivity {
         TextView txtCredits = (TextView) findViewById(R.id.txtCredits);
         txtCredits.setMovementMethod(LinkMovementMethod.getInstance());
 
-        // Start the tunes
         mp = MediaPlayer.create(this, R.raw.chibi_ninja);
-        mp.setLooping(true);
+
+        // setLooping doesn't work with the AwesomePlayer
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mediaplayer)
+            {
+                mediaplayer = MediaPlayer.create(getBaseContext(), R.raw.chibi_ninja);
+                mediaplayer.start();
+            }
+        });
 
         // Go back to where the song was, if it had already been playing
         if(savedInstanceState != null)

@@ -20,6 +20,7 @@ public class GameManager implements Parcelable {
     private int spawnWait;
     private int fallWait;
     private int autoShiftWait;
+    private int lineClearWait;
     private int elapsedFrames;
     private int soundEffectToPlay;
     private String lastInput;
@@ -46,6 +47,8 @@ public class GameManager implements Parcelable {
     private final int SPAWN_DELAY = 15;
     // Frames to wait before allowing consecutive duplicate inputs
     private final int AUTO_SHIFT_DELAY = 7;
+    // Frames to wait after a line is cleared before doing anything else
+    private final int LINE_CLEAR_DELAY = 21;
 
     public GameManager(){ }
 
@@ -66,6 +69,7 @@ public class GameManager implements Parcelable {
         lockWait = LOCK_DELAY;
         autoShiftWait = 0;
         fallWait = 0;
+        lineClearWait = LINE_CLEAR_DELAY;
         lastInput = "";
 
         // Start the history full of Zs.
@@ -89,113 +93,113 @@ public class GameManager implements Parcelable {
     // Move ahead a frame
     public void advanceFrame(String input)
     {
-        // No point evaluating movement and such if there's no piece to manipulate.
-        boolean downtime = false;
         redraw = false;
         soundEffectToPlay = -1;
         elapsedFrames++;
 
-        // If a block was placed last frame, swap it for the next one and generate a new next.
-        if(currentBlock == null)
+        if(lineClearWait < LINE_CLEAR_DELAY)
+            lineClearWait ++;
+        else
         {
-            if(spawnWait++ >= SPAWN_DELAY)
+            // If a block was placed last frame, swap it for the next one and generate a new next.
+            if(currentBlock == null)
             {
-                currentBlock = nextBlock;
-                nextBlock = generateNewBlock();
-                redraw = true;
-
-                // If the new block isn't in a valid location, the game is lost
-                if(!gameBoard.checkBlock(currentBlock))
-                    gameOver = false;
-
-                spawnWait = 0;
-                fallWait = 0;
-
-                // A new block appearing increases the level by one, unless the level ends in 99 or is the second last
-                if (!((level + 1) % 100 == 0 || level == maxLevel - 1))
-                    addLevel(1);
-            }
-            else
-                downtime = true;
-        }
-
-        if(!downtime)
-        {
-            droppedLines = 1;
-
-            // Check if the received input is the same as last frame
-            if(input.equals(lastInput))
-            {
-                // If so, wait some frames before accepting it again to avoid unintentional doubled inputs
-                if(autoShiftWait < AUTO_SHIFT_DELAY && !input.equals(""))
+                if(spawnWait++ >= SPAWN_DELAY)
                 {
-                    autoShiftWait++;
-                    input = "";
+                    currentBlock = nextBlock;
+                    nextBlock = generateNewBlock();
+                    redraw = true;
+
+                    // If the new block isn't in a valid location, the game is lost
+                    if(!gameBoard.checkBlock(currentBlock))
+                        gameOver = false;
+
+                    spawnWait = 0;
+                    fallWait = 0;
+
+                    // A new block appearing increases the level by one, unless the level ends in 99 or is the second last
+                    if(!((level + 1) % 100 == 0 || level == maxLevel - 1))
+                        addLevel(1);
                 }
             }
             else
             {
-                lastInput = input;
-                autoShiftWait = 0;
-            }
+                droppedLines = 1;
 
-            switch (input)
-            {
-                case "drop":
-                    drop();
-                    break;
-                case "left":
-                    moveLeft();
-                    break;
-                case "right":
-                    moveRight();
-                    break;
-                case "rotateLeft":
-                    rotateLeft();
-                    break;
-                case "rotateRight":
-                    rotateRight();
-                    break;
-                case "down":
-                    fallWait = gravity;
-                    break;
-                default:
-                    break;
-            }
-
-            // Check if the block is currently in a state of falling
-            if (gameBoard.checkDown(currentBlock))
-            {
-                lockWait = LOCK_DELAY;
-                // Move the block down if enough time has passed
-                if (gravity > 0)
+                // Check if the received input is the same as last frame
+                if(input.equals(lastInput))
                 {
-                    if(fallWait++ >= gravity)
+                    // If so, wait some frames before accepting it again to avoid unintentional doubled inputs
+                    if(autoShiftWait < AUTO_SHIFT_DELAY && !input.equals(""))
                     {
-                        fallWait = 0;
-                        currentBlock.moveDown();
-                        redraw = true;
+                        autoShiftWait++;
+                        input = "";
                     }
                 }
                 else
-                    for (int i = 0; i < superGravity; i++)
-                        if (gameBoard.checkDown(currentBlock))
+                {
+                    lastInput = input;
+                    autoShiftWait = 0;
+                }
+
+                switch(input)
+                {
+                    case "drop":
+                        drop();
+                        break;
+                    case "left":
+                        moveLeft();
+                        break;
+                    case "right":
+                        moveRight();
+                        break;
+                    case "rotateLeft":
+                        rotateLeft();
+                        break;
+                    case "rotateRight":
+                        rotateRight();
+                        break;
+                    case "down":
+                        fallWait = gravity;
+                        break;
+                    default:
+                        break;
+                }
+
+                // Check if the block is currently in a state of falling
+                if(gameBoard.checkDown(currentBlock))
+                {
+                    lockWait = LOCK_DELAY;
+                    // Move the block down if enough time has passed
+                    if(gravity > 0)
+                    {
+                        if(fallWait++ >= gravity)
                         {
+                            fallWait = 0;
                             currentBlock.moveDown();
                             redraw = true;
                         }
-            }
-            else
-            {
-                // Check if the block needs to be locked
-                if (lockWait++ >= LOCK_DELAY)
+                    }
+                    else
+                        for(int i = 0; i < superGravity; i++)
+                            if(gameBoard.checkDown(currentBlock))
+                            {
+                                currentBlock.moveDown();
+                                redraw = true;
+                            }
+                }
+                else
                 {
-                    gameBoard.lockBlock(currentBlock);
-                    lockWait = LOCK_DELAY;
-                    soundEffectToPlay = 0;
-                    // Check if locking that piece caused any lines to be cleared
-                    checkClears();
-                    currentBlock = null;
+                    // Check if the block needs to be locked
+                    if(lockWait++ >= LOCK_DELAY)
+                    {
+                        gameBoard.lockBlock(currentBlock);
+                        lockWait = LOCK_DELAY;
+                        soundEffectToPlay = 0;
+                        // Check if locking that piece caused any lines to be cleared
+                        checkClears();
+                        currentBlock = null;
+                    }
                 }
             }
         }
@@ -327,6 +331,7 @@ public class GameManager implements Parcelable {
             }
             redraw = true;
             soundEffectToPlay = 1;
+            lineClearWait = 0;
         }
         else
             combo = 1;
@@ -502,7 +507,6 @@ public class GameManager implements Parcelable {
     public Boolean getGameOver() { return gameOver; }
     public Block getCurrentBlock() { return currentBlock; }
     public boolean getRedraw() { return redraw; }
-    public void setRedraw(boolean redraw) { this.redraw = redraw; }
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {

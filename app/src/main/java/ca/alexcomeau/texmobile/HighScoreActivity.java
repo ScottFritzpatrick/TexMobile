@@ -21,7 +21,13 @@ public class HighScoreActivity extends AppCompatActivity {
 
         // Start the tunes
         mp = MediaPlayer.create(this, R.raw.chibi_ninja);
-        mp.setLooping(true);
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mediaplayer)
+            {
+                mediaplayer = MediaPlayer.create(getBaseContext(), R.raw.chibi_ninja);
+                mediaplayer.start();
+            }
+        });
 
         // Go back to where the song was, if it had already been playing
         if(savedInstanceState != null)
