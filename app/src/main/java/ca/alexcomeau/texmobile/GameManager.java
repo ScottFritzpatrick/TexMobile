@@ -194,7 +194,7 @@ public class GameManager implements Parcelable {
                     if(lockWait++ >= LOCK_DELAY)
                     {
                         gameBoard.lockBlock(currentBlock);
-                        lockWait = LOCK_DELAY;
+                        lockWait = 0;
                         soundEffectToPlay = 0;
                         // Check if locking that piece caused any lines to be cleared
                         checkClears();
@@ -521,6 +521,7 @@ public class GameManager implements Parcelable {
         spawnWait = in.readInt();
         fallWait = in.readInt();
         autoShiftWait = in.readInt();
+        lineClearWait = in.readInt();
         elapsedFrames = in.readInt();
         if (in.readByte() == 0x01) {
             history = new LinkedList<>();
@@ -559,6 +560,7 @@ public class GameManager implements Parcelable {
         dest.writeInt(spawnWait);
         dest.writeInt(fallWait);
         dest.writeInt(autoShiftWait);
+        dest.writeInt(lineClearWait);
         dest.writeInt(elapsedFrames);
         if (history == null) {
             dest.writeByte((byte) (0x00));

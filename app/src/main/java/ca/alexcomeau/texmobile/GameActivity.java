@@ -50,6 +50,7 @@ public class GameActivity extends AppCompatActivity implements Serializable{
 
         mp.start();
 
+        // This was deprecated in API 21, but target is 19...
         sp = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
         soundEffects = new int[2];
         soundEffects[0] = sp.load(this, R.raw.piece_lock, 1);
