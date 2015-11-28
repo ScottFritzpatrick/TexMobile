@@ -21,6 +21,7 @@ public class GameManager implements Parcelable {
     private int fallWait;
     private int autoShiftWait;
     private int elapsedFrames;
+    private int soundEffectToPlay;
     private String lastInput;
     private LinkedList<Integer> history;
     private boolean grandmasterValid;
@@ -91,6 +92,7 @@ public class GameManager implements Parcelable {
         // No point evaluating movement and such if there's no piece to manipulate.
         boolean downtime = false;
         redraw = false;
+        soundEffectToPlay = -1;
         elapsedFrames++;
 
         // If a block was placed last frame, swap it for the next one and generate a new next.
@@ -190,6 +192,7 @@ public class GameManager implements Parcelable {
                 {
                     gameBoard.lockBlock(currentBlock);
                     lockWait = LOCK_DELAY;
+                    soundEffectToPlay = 0;
                     // Check if locking that piece caused any lines to be cleared
                     checkClears();
                     currentBlock = null;
@@ -323,6 +326,7 @@ public class GameManager implements Parcelable {
                 gameOver = true;
             }
             redraw = true;
+            soundEffectToPlay = 1;
         }
         else
             combo = 1;
@@ -494,6 +498,7 @@ public class GameManager implements Parcelable {
     public int getMaxLevel() { return maxLevel; }
     public int getScore() { return score; }
     public int getFrames() { return elapsedFrames; }
+    public int getSoundEffectToPlay() { return soundEffectToPlay; }
     public Boolean getGameOver() { return gameOver; }
     public Block getCurrentBlock() { return currentBlock; }
     public boolean getRedraw() { return redraw; }
@@ -529,6 +534,7 @@ public class GameManager implements Parcelable {
         gravity = in.readInt();
         superGravity = in.readInt();
         maxLevel = in.readInt();
+        soundEffectToPlay = -1;
     }
 
     @Override

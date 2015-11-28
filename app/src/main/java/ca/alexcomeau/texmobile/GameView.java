@@ -6,10 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import ca.alexcomeau.texmobile.blocks.Block;
 
@@ -120,7 +118,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void update()
     {
         if(gameStarted)
+        {
             game.advanceFrame(activity.getInput());
+            if(game.getSoundEffectToPlay() > -1)
+                activity.playSound(game.getSoundEffectToPlay());
+        }
     }
 
     public void render(Canvas canvas)

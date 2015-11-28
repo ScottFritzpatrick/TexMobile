@@ -1,6 +1,9 @@
 package ca.alexcomeau.texmobile;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
@@ -13,6 +16,9 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity implements Serializable{
     private GameView gameView;
     private String input;
+    private MediaPlayer mp;
+    private SoundPool sp;
+    private int[] soundEffects;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,6 +27,9 @@ public class GameActivity extends AppCompatActivity implements Serializable{
 
         input = "";
         gameView = (GameView) findViewById(R.id.svBoard);
+        mp = MediaPlayer.create(this, R.raw.all_of_us);
+        mp.setVolume(0.5f, 0.5f);
+        mp.setLooping(true);
 
         if(savedInstanceState == null)
         {
@@ -30,7 +39,15 @@ public class GameActivity extends AppCompatActivity implements Serializable{
         else
         {
             gameView.setupGame((GameManager) savedInstanceState.getParcelable("game"), this);
+            mp.seekTo(savedInstanceState.getInt("songPosition"));
         }
+
+        mp.start();
+
+        sp = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        soundEffects = new int[2];
+        soundEffects[0] = sp.load(this, R.raw.piece_lock, 1);
+        soundEffects[1] = sp.load(this, R.raw.line_clear, 1);
 
         // Wire up all the buttons
         List<Button> btns = new ArrayList<>();
@@ -59,35 +76,11 @@ public class GameActivity extends AppCompatActivity implements Serializable{
                     return false;
                 }
             });
-
-        // Make the canvas fill the screen
-        /*Display display = getWindowManager().getDefaultDisplay();
-        Point dimens = new Point();
-        display.getSize(dimens);
-        int screenheight = dimens.y;
-        double h, w;
-
-        if(display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
-            h = screenheight * 0.7;
-        else
-            h = screenheight * 0.9;
-
-        w = h * 0.5;
-        gameView.setLayoutParams(new android.widget.LinearLayout.LayoutParams((int) w, (int) h));
-        */
     }
 
-    @Override
-    protected void onPause()
+    public void playSound(int i)
     {
-        super.onPause();
-        gameView.stop();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        outState.putParcelable("game", gameView.getGame());
+        sp.play(soundEffects[i], 1, 1, 1, 0, 1.0f);
     }
 
     private void gameOver()
@@ -141,4 +134,36 @@ public class GameActivity extends AppCompatActivity implements Serializable{
     }
 
     public String getInput() { return input; }
+
+    @Override
+    protected void onPause()
+    {
+        mp.pause();
+        super.onPause();
+        gameView.stop();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        mp.start();
+        super.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putParcelable("game", gameView.getGame());
+        outState.putInt("songPosition", mp.getCurrentPosition());
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        mp.release();
+        sp.release();
+        mp = null;
+        sp = null;
+        super.onDestroy();
+    }
 }

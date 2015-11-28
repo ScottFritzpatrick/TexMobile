@@ -1,6 +1,7 @@
 package ca.alexcomeau.texmobile;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,12 +11,23 @@ import android.widget.TextView;
 import java.util.List;
 
 public class HighScoreActivity extends AppCompatActivity {
+    private MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
+
+        // Start the tunes
+        mp = MediaPlayer.create(this, R.raw.chibi_ninja);
+        mp.setLooping(true);
+
+        // Go back to where the song was, if it had already been playing
+        if(savedInstanceState != null)
+            mp.seekTo(savedInstanceState.getInt("songPosition"));
+
+        mp.start();
 
         // Get all the scores
         ScoreDBManager scoreManager = new ScoreDBManager(this);
@@ -37,7 +49,7 @@ public class HighScoreActivity extends AppCompatActivity {
             txtName.setLayoutParams(new TableRow.LayoutParams(1));
 
             TextView txtScore = new TextView(this);
-            txtScore.setText(s.score + "");
+            txtScore.setText(Integer.toString(s.score));
             txtScore.setLayoutParams(new TableRow.LayoutParams(2));
 
             TextView txtTime = new TextView(this);
@@ -62,7 +74,36 @@ public class HighScoreActivity extends AppCompatActivity {
         // Back to the main menu.
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("songPosition", mp.getCurrentPosition());
         finish();
         startActivity(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putInt("songPosition", mp.getCurrentPosition());
+    }
+
+    @Override
+    protected void onPause()
+    {
+        mp.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        mp.start();
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        mp.release();
+        mp = null;
+        super.onDestroy();
     }
 }
