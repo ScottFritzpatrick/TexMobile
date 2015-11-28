@@ -49,11 +49,16 @@
         android:layout_toStartOf="@+id/rightControls"
         android:id="@+id/surface_layout">
 
-        <ca.alexcomeau.texmobile.GameView
-            android:layout_width="160dp"
-            android:layout_height="320dp"
-            android:layout_marginStart="5dp"
-            android:id="@+id/svBoard"/>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <ca.alexcomeau.texmobile.GameView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:id="@+id/svBoard" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

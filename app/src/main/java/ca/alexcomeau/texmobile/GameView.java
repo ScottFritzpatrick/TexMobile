@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import ca.alexcomeau.texmobile.blocks.Block;
 
@@ -21,6 +23,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     private TextView txtLevel;
     private int rectWidth;
     private boolean gameStarted;
+    int width, height;
 
     public GameView(Context ctx, AttributeSet attrs)
     {
@@ -29,6 +32,44 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         getHolder().addCallback(this);
         setFocusable(true);
         gameStarted = false;
+    }
+
+    @Override
+    public void onMeasure(int widthSpec, int heightSpec)
+    {
+        // This override is so the view will fill all available space, while also maintaining its aspect ratio.
+        int heightMode = MeasureSpec.getMode(heightSpec);
+        int widthMode = MeasureSpec.getMode(widthSpec);
+        int widthSize = MeasureSpec.getSize(widthSpec);
+        int heightSize = MeasureSpec.getSize(heightSpec);
+
+        //Measure Width
+        if (widthMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            width = Math.min(heightSize / 2, widthSize);
+            width = width - (width % 10);
+        } else {
+            //Be whatever you want
+            width = Integer.MAX_VALUE;
+        }
+
+        //Measure Height
+        if (heightMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            height = Math.min(width * 2, heightSize);
+            height = height - (height % 20);
+        } else {
+            //Be whatever you want
+            height = Integer.MAX_VALUE;
+        }
+
+        this.setMeasuredDimension(width, height);
     }
 
     public void setupGame(int start, int end, GameActivity activity)
@@ -91,8 +132,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         if(game.getRedraw() && gameStarted)
         {
             // Set up the rectangle width based on the canvas size
-            if(rectWidth == 0)
-                rectWidth = canvas.getWidth() / 10;
+            rectWidth = canvas.getWidth() / 10;
 
             canvas.drawColor(Color.BLACK);
             Paint paint = new Paint();
