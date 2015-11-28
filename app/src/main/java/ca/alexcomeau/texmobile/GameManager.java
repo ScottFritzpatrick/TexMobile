@@ -154,6 +154,9 @@ public class GameManager implements Parcelable {
                 case "rotateRight":
                     rotateRight();
                     break;
+                case "down":
+                    fallWait = gravity;
+                    break;
                 default:
                     break;
             }
@@ -164,19 +167,21 @@ public class GameManager implements Parcelable {
                 lockWait = LOCK_DELAY;
                 // Move the block down if enough time has passed
                 if (gravity > 0)
-                    if (fallWait++ >= gravity)
+                {
+                    if(fallWait++ >= gravity)
                     {
                         fallWait = 0;
                         currentBlock.moveDown();
                         redraw = true;
                     }
-                    else
-                        for (int i = 0; i < superGravity; i++)
-                            if (gameBoard.checkDown(currentBlock))
-                            {
-                                currentBlock.moveDown();
-                                redraw = true;
-                            }
+                }
+                else
+                    for (int i = 0; i < superGravity; i++)
+                        if (gameBoard.checkDown(currentBlock))
+                        {
+                            currentBlock.moveDown();
+                            redraw = true;
+                        }
             }
             else
             {

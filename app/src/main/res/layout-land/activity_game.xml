@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/btnDrop1"
+            android:id="@+id/btnDrop"
             android:tag="drop"
             android:text="D"
             style="?android:buttonBarButtonStyle"/>
@@ -120,9 +120,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/btnDrop2"
+            android:id="@+id/btnDown"
             android:tag="drop"
-            android:text="D"
+            android:text="sD"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 
