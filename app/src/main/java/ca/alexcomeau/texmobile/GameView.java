@@ -43,31 +43,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         int widthSize = MeasureSpec.getSize(widthSpec);
         int heightSize = MeasureSpec.getSize(heightSpec);
 
-        //Measure Width
-        if (widthMode == MeasureSpec.EXACTLY) {
-            //Must be this size
+        if (widthMode == MeasureSpec.EXACTLY)
             width = widthSize;
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
+        else if (widthMode == MeasureSpec.AT_MOST)
+        {
             width = Math.min(heightSize / 2, widthSize);
+            // Trim excess. There's 10 columns, so it needs to be divisible by 10
             width = width - (width % 10);
-        } else {
-            //Be whatever you want
+        }
+        else
             width = Integer.MAX_VALUE;
-        }
 
-        //Measure Height
-        if (heightMode == MeasureSpec.EXACTLY) {
-            //Must be this size
+        if (heightMode == MeasureSpec.EXACTLY)
             height = heightSize;
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
+        else if (heightMode == MeasureSpec.AT_MOST)
+        {
             height = Math.min(width * 2, heightSize);
+            // Trim excess. There's 20 rows, so it needs to be divisible by 20
             height = height - (height % 20);
-        } else {
-            //Be whatever you want
-            height = Integer.MAX_VALUE;
         }
+        else
+            height = Integer.MAX_VALUE;
 
         this.setMeasuredDimension(width, height);
     }
