@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         txtCredits.setMovementMethod(LinkMovementMethod.getInstance());
 
         mp = MediaPlayer.create(this, R.raw.chibi_ninja);
+        mp.setVolume(0.7f, 0.7f);
 
         // setLooping doesn't work with the "AwesomePlayer"
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

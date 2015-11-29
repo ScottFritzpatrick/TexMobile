@@ -21,6 +21,7 @@ public class HighScoreActivity extends AppCompatActivity {
 
         // Start the tunes
         mp = MediaPlayer.create(this, R.raw.chibi_ninja);
+        mp.setVolume(0.7f, 0.7f);
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mediaplayer)
             {
