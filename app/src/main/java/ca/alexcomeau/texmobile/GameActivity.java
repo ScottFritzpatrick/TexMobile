@@ -1,17 +1,24 @@
 package ca.alexcomeau.texmobile;
 
 import android.content.Intent;
+import android.graphics.drawable.NinePatchDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import ca.alexcomeau.texmobile.blocks.Block;
 
 public class GameActivity extends AppCompatActivity implements Serializable {
     private GameView gameView;
@@ -19,6 +26,10 @@ public class GameActivity extends AppCompatActivity implements Serializable {
     private MediaPlayer mp;
     private SoundPool sp;
     private int[] soundEffects;
+    private ImageView imgNext;
+    private TextView txtScore;
+    private TextView txtLevel;
+    private NinePatchDrawable[] nextPieces;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,6 +38,10 @@ public class GameActivity extends AppCompatActivity implements Serializable {
 
         input = "";
         gameView = (GameView) findViewById(R.id.svBoard);
+        txtScore = (TextView) findViewById(R.id.txtScore);
+        txtLevel = (TextView) findViewById(R.id.txtLevel);
+        imgNext = (ImageView) findViewById(R.id.imgNext);
+
         mp = MediaPlayer.create(this, R.raw.all_of_us);
         mp.setVolume(0.5f, 0.5f);
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -37,24 +52,21 @@ public class GameActivity extends AppCompatActivity implements Serializable {
             }
         });
 
-        if(savedInstanceState == null)
-        {
-            Intent intent = getIntent();
-            gameView.setupGame(intent.getIntExtra("startLevel", 0), intent.getIntExtra("maxLevel", 999), this);
-        }
-        else
-        {
-            gameView.setupGame((GameManager) savedInstanceState.getParcelable("game"), this);
-            mp.seekTo(savedInstanceState.getInt("songPosition"));
-        }
-
-        mp.start();
-
         // This was deprecated in API 21, but target is 19...
         sp = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
         soundEffects = new int[2];
         soundEffects[0] = sp.load(this, R.raw.piece_lock, 1);
         soundEffects[1] = sp.load(this, R.raw.line_clear, 1);
+
+        // Get all the drawables
+        nextPieces = new NinePatchDrawable[8];
+        nextPieces[Block.I] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_i);
+        nextPieces[Block.J] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_j);
+        nextPieces[Block.L] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_l);
+        nextPieces[Block.O] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_o);
+        nextPieces[Block.S] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_s);
+        nextPieces[Block.T] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_t);
+        nextPieces[Block.Z] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_z);
 
         // Wire up all the buttons
         List<Button> btns = new ArrayList<>();
@@ -83,6 +95,19 @@ public class GameActivity extends AppCompatActivity implements Serializable {
                     return false;
                 }
             });
+
+        if(savedInstanceState == null)
+        {
+            Intent intent = getIntent();
+            gameView.setupGame(intent.getIntExtra("startLevel", 0), intent.getIntExtra("maxLevel", 999), this);
+        }
+        else
+        {
+            gameView.setupGame((GameManager) savedInstanceState.getParcelable("game"), this);
+            mp.seekTo(savedInstanceState.getInt("songPosition"));
+        }
+
+        mp.start();
     }
 
     public void playSound(int i)
@@ -141,6 +166,10 @@ public class GameActivity extends AppCompatActivity implements Serializable {
     }
 
     public String getInput() { return input; }
+
+    public void setNextPiece(byte id) { imgNext.setBackground(nextPieces[id]); }
+    public void setScore(int score) { txtScore.setText(String.format(getString(R.string.score), score)); }
+    public void setLevel(int curr, int last) { txtLevel.setText(String.format(getString(R.string.level), curr, last)); }
 
     @Override
     protected void onPause()

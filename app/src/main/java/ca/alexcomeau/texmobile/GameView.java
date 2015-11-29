@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.TextView;
 
 import java.util.Hashtable;
 
@@ -23,13 +22,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     private GameManager game;
     private Context context;
     private GameActivity activity;
-    private TextView txtScore;
-    private TextView txtLevel;
     private int rectWidth;
     private boolean gameStarted;
     private Hashtable<Byte, NinePatchDrawable> htShapes;
     private Bitmap stackState;
-    int width, height;
 
     public GameView(Context ctx, AttributeSet attrs)
     {
@@ -50,6 +46,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         int widthMode = MeasureSpec.getMode(widthSpec);
         int widthSize = MeasureSpec.getSize(widthSpec);
         int heightSize = MeasureSpec.getSize(heightSpec);
+        int width, height;
 
         if (widthMode == MeasureSpec.EXACTLY)
             width = widthSize;
@@ -88,9 +85,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
         this.game = game;
         this.activity = activity;
-
-        txtScore = (TextView) activity.findViewById(R.id.txtScore);
-        txtLevel = (TextView) activity.findViewById(R.id.txtLevel);
 
         gameStarted = true;
 
@@ -149,15 +143,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             // Set up the rectangle width based on the canvas size
             rectWidth = canvas.getWidth() / 10;
 
+            boolean sizeChanged = false;
+
             // If this is the first run, or the orientation changed, remake the bitmap
             if(stackState.getWidth() != canvas.getWidth())
+            {
                 stackState = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+                sizeChanged = true;
+            }
 
             NinePatchDrawable tile;
             canvas.drawColor(Color.BLACK);
             Block lastBlock = game.getLastBlock();
 
-            if(game.getStackRedraw())
+            if(game.getStackRedraw() || sizeChanged)
             {
                 // Draw the stack onto a bitmap so we can avoid drawing it over and over
                 Canvas stack = new Canvas(stackState);
@@ -196,18 +195,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             if (currentBlock != null)
                 drawBlock(currentBlock, canvas);
 
-            // Update the text views and play sounds
+            // Update the views and play sounds
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run()
                 {
-                    txtScore.setText(String.format(activity.getString(R.string.score), game.getScore()));
-                    txtLevel.setText(String.format(activity.getString(R.string.level), game.getLevel(), game.getMaxLevel()));
+                    activity.setScore(game.getScore());
+                    activity.setLevel(game.getLevel(), game.getMaxLevel());
                     if(game.getSoundEffectToPlay() > -1)
                     {
                         activity.playSound(game.getSoundEffectToPlay());
                         game.clearSoundEffect();
                     }
+                    activity.setNextPiece(game.getNextBlock().getBlockID());
                 }
             });
         }

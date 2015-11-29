@@ -524,6 +524,7 @@ public class GameManager implements Parcelable {
     public int getSoundEffectToPlay() { return soundEffectToPlay; }
     public Boolean getGameOver() { return gameOver; }
     public Block getCurrentBlock() { return currentBlock; }
+    public Block getNextBlock() { return nextBlock; }
     public boolean getStackRedraw() { return stackRedraw; }
     public boolean getPieceRedraw() { return pieceRedraw; }
     public Block getLastBlock() { return lastBlock; }

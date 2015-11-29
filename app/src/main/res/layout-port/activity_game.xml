@@ -30,21 +30,27 @@
                 android:layout_height="wrap_content"
                 android:text="@string/next"
                 android:textSize="16sp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/black"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="85dp"
+                android:layout_height="45dp"
                 android:id="@+id/imgNext"
-                android:contentDescription="@string/next"/>
+                android:padding="5dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/next"
+                android:background="@drawable/next_piece_i"
+                android:textColor="@android:color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/score"
                 android:textSize="16sp"
-                android:layout_marginTop="50dp"
-                android:id="@+id/txtScore"/>
+                android:layout_marginTop="30dp"
+                android:id="@+id/txtScore"
+                android:textColor="@android:color/black"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,7 +59,8 @@
                 android:textSize="16sp"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="10dp"
-                android:id="@+id/txtLevel"/>
+                android:id="@+id/txtLevel"
+                android:textColor="@android:color/black"/>
         </LinearLayout>
 
     <LinearLayout
