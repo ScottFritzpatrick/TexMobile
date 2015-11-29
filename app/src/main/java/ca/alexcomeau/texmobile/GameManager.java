@@ -29,7 +29,8 @@ public class GameManager implements Parcelable {
     private boolean check1;
     private boolean check2;
     private boolean check3;
-    private boolean redraw;
+    private boolean pieceRedraw;
+    private boolean stackRedraw;
     private Boolean gameOver;
 
     // Pieces drop every gravity frames, if gravity > 0.
@@ -63,7 +64,8 @@ public class GameManager implements Parcelable {
         addLevel(levelStart);
         combo = 1;
         gameOver = null;
-        redraw = true;
+        pieceRedraw = true;
+        stackRedraw = false;
         elapsedFrames = 0;
         spawnWait = 0;
         lockWait = LOCK_DELAY;
@@ -93,7 +95,8 @@ public class GameManager implements Parcelable {
     // Move ahead a frame
     public void advanceFrame(String input)
     {
-        redraw = false;
+        pieceRedraw = false;
+        stackRedraw = false;
         soundEffectToPlay = -1;
         elapsedFrames++;
 
@@ -108,7 +111,7 @@ public class GameManager implements Parcelable {
                 {
                     currentBlock = nextBlock;
                     nextBlock = generateNewBlock();
-                    redraw = true;
+                    pieceRedraw = true;
 
                     // If the new block isn't in a valid location, the game is lost
                     if(!gameBoard.checkBlock(currentBlock))
@@ -169,7 +172,7 @@ public class GameManager implements Parcelable {
                 // Check if the block is currently in a state of falling
                 if(gameBoard.checkDown(currentBlock))
                 {
-                    lockWait = LOCK_DELAY;
+                    lockWait = 0;
                     // Move the block down if enough time has passed
                     if(gravity > 0)
                     {
@@ -177,7 +180,7 @@ public class GameManager implements Parcelable {
                         {
                             fallWait = 0;
                             currentBlock.moveDown();
-                            redraw = true;
+                            pieceRedraw = true;
                         }
                     }
                     else
@@ -185,7 +188,7 @@ public class GameManager implements Parcelable {
                             if(gameBoard.checkDown(currentBlock))
                             {
                                 currentBlock.moveDown();
-                                redraw = true;
+                                pieceRedraw = true;
                             }
                 }
                 else
@@ -196,6 +199,7 @@ public class GameManager implements Parcelable {
                         gameBoard.lockBlock(currentBlock);
                         lockWait = 0;
                         soundEffectToPlay = 0;
+                        stackRedraw = true;
                         // Check if locking that piece caused any lines to be cleared
                         checkClears();
                         currentBlock = null;
@@ -213,7 +217,7 @@ public class GameManager implements Parcelable {
         {
             currentBlock.moveDown();
             droppedLines++;
-            redraw = true;
+            pieceRedraw = true;
         }
 
         lockWait = LOCK_DELAY;
@@ -224,7 +228,7 @@ public class GameManager implements Parcelable {
         if(gameBoard.checkLeft(currentBlock))
         {
             currentBlock.moveLeft();
-            redraw = true;
+            pieceRedraw = true;
         }
     }
 
@@ -232,7 +236,7 @@ public class GameManager implements Parcelable {
         if (gameBoard.checkRight(currentBlock))
         {
             currentBlock.moveRight();
-            redraw = true;
+            pieceRedraw = true;
         }
     }
 
@@ -241,7 +245,7 @@ public class GameManager implements Parcelable {
         if(gameBoard.checkRotateLeft(currentBlock))
         {
             currentBlock.rotateLeft();
-            redraw = true;
+            pieceRedraw = true;
         }
         else
         {
@@ -251,7 +255,7 @@ public class GameManager implements Parcelable {
             if(gameBoard.checkRotateLeft(currentBlock))
             {
                 currentBlock.rotateLeft();
-                redraw = true;
+                pieceRedraw = true;
             }
 
             // Undo the move right if it still didn't work
@@ -265,7 +269,7 @@ public class GameManager implements Parcelable {
         if(gameBoard.checkRotateRight(currentBlock))
         {
             currentBlock.rotateRight();
-            redraw = true;
+            pieceRedraw = true;
         }
         else
         {
@@ -275,7 +279,7 @@ public class GameManager implements Parcelable {
             if(gameBoard.checkRotateRight(currentBlock))
             {
                 currentBlock.rotateRight();
-                redraw = true;
+                pieceRedraw = true;
             }
                 // Undo the move left if it still didn't work
             else
@@ -324,12 +328,13 @@ public class GameManager implements Parcelable {
                 if(check3)
                 {
                     // Final check. Score >= 126000, Time <= 13m30s. 1 frame per 34 ms.
-                    if(score < 126000 && elapsedFrames * 34 > 810000) grandmasterValid = false;
+                    if(score < 126000 && elapsedFrames * 34 > 810000)
+                        grandmasterValid = false;
                     check3 = false;
                 }
                 gameOver = true;
             }
-            redraw = true;
+
             soundEffectToPlay = 1;
             lineClearWait = 0;
         }
@@ -506,7 +511,8 @@ public class GameManager implements Parcelable {
     public int getSoundEffectToPlay() { return soundEffectToPlay; }
     public Boolean getGameOver() { return gameOver; }
     public Block getCurrentBlock() { return currentBlock; }
-    public boolean getRedraw() { return redraw; }
+    public boolean getStackRedraw() { return stackRedraw; }
+    public boolean getPieceRedraw() { return pieceRedraw; }
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {
@@ -533,7 +539,8 @@ public class GameManager implements Parcelable {
         check1 = in.readByte() != 0x00;
         check2 = in.readByte() != 0x00;
         check3 = in.readByte() != 0x00;
-        redraw = in.readByte() != 0x00;
+        pieceRedraw = true;
+        stackRedraw = true;
         byte gameOverVal = in.readByte();
         gameOver = gameOverVal == 0x02 ? null : gameOverVal != 0x00;
         gravity = in.readInt();
@@ -572,7 +579,6 @@ public class GameManager implements Parcelable {
         dest.writeByte((byte) (check1 ? 0x01 : 0x00));
         dest.writeByte((byte) (check2 ? 0x01 : 0x00));
         dest.writeByte((byte) (check3 ? 0x01 : 0x00));
-        dest.writeByte((byte) (redraw ? 0x01 : 0x00));
         if (gameOver == null) {
             dest.writeByte((byte) (0x02));
         } else {
