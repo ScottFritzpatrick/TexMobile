@@ -70,7 +70,7 @@ public class GameActivity extends AppCompatActivity implements Serializable {
 
         // Wire up all the buttons
         List<Button> btns = new ArrayList<>();
-        btns.add((Button) findViewById(R.id.btnDrop));
+        btns.add((Button) findViewById(R.id.btnDown2));
         btns.add((Button) findViewById(R.id.btnDown));
         btns.add((Button) findViewById(R.id.btnMoveLeft));
         btns.add((Button) findViewById(R.id.btnMoveRight));

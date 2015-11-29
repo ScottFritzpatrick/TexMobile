@@ -12,8 +12,6 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.Hashtable;
-
 import ca.alexcomeau.texmobile.blocks.Block;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
@@ -24,7 +22,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     private GameActivity activity;
     private int rectWidth;
     private boolean gameStarted;
-    private Hashtable<Byte, NinePatchDrawable> htShapes;
+    private NinePatchDrawable[] htShapes;
     private Bitmap stackState;
 
     public GameView(Context ctx, AttributeSet attrs)
@@ -88,16 +86,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
         gameStarted = true;
 
-        htShapes = new Hashtable<>();
+        htShapes = new NinePatchDrawable[8];
 
         // Get all the drawables and associate them with the IDs
-        htShapes.put(Block.I, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_red));
-        htShapes.put(Block.J, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_blue));
-        htShapes.put(Block.L, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_orange));
-        htShapes.put(Block.O, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_yellow));
-        htShapes.put(Block.S, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_magenta));
-        htShapes.put(Block.T, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_cyan));
-        htShapes.put(Block.Z, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_green));
+        htShapes[Block.I] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_red);
+        htShapes[Block.J] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_blue);
+        htShapes[Block.L] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_orange);
+        htShapes[Block.O] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_yellow);
+        htShapes[Block.S] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_magenta);
+        htShapes[Block.T] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_cyan);
+        htShapes[Block.Z] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_green);
     }
 
 
@@ -138,102 +136,105 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     public void render(Canvas canvas)
     {
-        if(getRedraw() && gameStarted)
+        if(gameStarted)
         {
-            // Set up the rectangle width based on the canvas size
-            rectWidth = canvas.getWidth() / 10;
-
-            boolean sizeChanged = false;
-
-            // If this is the first run, or the orientation changed, remake the bitmap
-            if(stackState.getWidth() != canvas.getWidth())
+            if(game.getSoundEffectToPlay() > -1)
             {
-                stackState = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
-                sizeChanged = true;
+                activity.playSound(game.getSoundEffectToPlay());
+                game.clearSoundEffect();
             }
-
-            NinePatchDrawable tile;
-            canvas.drawColor(Color.BLACK);
-            Block lastBlock = game.getLastBlock();
-
-            if(game.getStackRedraw() || sizeChanged)
+            if(getRedraw())
             {
-                // Draw the stack onto a bitmap so we can avoid drawing it over and over
-                Canvas stack = new Canvas(stackState);
-                stack.drawColor(Color.BLACK);
+                // Set up the rectangle width based on the canvas size
+                rectWidth = canvas.getWidth() / 10;
 
-                byte[][] colors = game.getStack();
+                boolean sizeChanged = false;
 
-                // Paint the stack onto the canvas (and therefore onto the bitmap. Top two rows aren't drawn.
-                for(int i = 0; i <= 20; i++)
-                    for(int j = 0; j < 10; j++)
-                        // The canvas is already black so we don't have to draw that.
-                        if(colors[i][j] != 0)
-                        {
-                            tile = htShapes.get(colors[i][j]);
-                            tile.setBounds(j * rectWidth,
-                                    (20 - i) * rectWidth - rectWidth,
-                                    j * rectWidth + rectWidth,
-                                    (20 - i) * rectWidth);
-                            tile.draw(stack);
-                        }
-                game.clearLastBlock();
-            }
-            else if(lastBlock != null)
-            {
-                // If a block was locked but no lines cleared, just draw that block onto the stack image
-                // No need to redraw the whole thing since the old tiles didn't change.
-                Canvas stack = new Canvas(stackState);
-                drawBlock(lastBlock, stack);
-                game.clearLastBlock();
-            }
-
-            canvas.drawBitmap(stackState, 0, 0, new Paint());
-
-            // Paint the active piece onto the canvas
-            Block currentBlock = game.getCurrentBlock();
-            if (currentBlock != null)
-                drawBlock(currentBlock, canvas);
-
-            // Update the views and play sounds
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run()
+                // If this is the first run, or the orientation changed, remake the bitmap
+                if(stackState.getWidth() != canvas.getWidth())
                 {
-                    activity.setScore(game.getScore());
-                    activity.setLevel(game.getLevel(), game.getMaxLevel());
-                    if(game.getSoundEffectToPlay() > -1)
-                    {
-                        activity.playSound(game.getSoundEffectToPlay());
-                        game.clearSoundEffect();
-                    }
-                    activity.setNextPiece(game.getNextBlock().getBlockID());
+                    stackState = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+                    sizeChanged = true;
                 }
-            });
-        }
 
-        if(game.getGameOver() != null)
-        {
-            // Stop the thread
-            thread.setRunning(false);
-            // Draw a message
-            Paint paint = new Paint();
-            paint.setTextSize(rectWidth);
+                NinePatchDrawable tile;
+                canvas.drawColor(Color.BLACK);
+                Block lastBlock = game.getLastBlock();
 
-            // shadow
-            paint.setColor(Color.DKGRAY);
-            canvas.drawText(context.getString(R.string.gameover), rectWidth + 2, rectWidth + 2, paint);
-            canvas.drawText(context.getString(R.string.pressAny), rectWidth + 2, rectWidth * 3 + 2, paint);
+                if(game.getStackRedraw() || sizeChanged)
+                {
+                    // Draw the stack onto a bitmap so we can avoid drawing it over and over
+                    Canvas stack = new Canvas(stackState);
+                    stack.drawColor(Color.BLACK);
 
-            paint.setColor(Color.WHITE);
-            canvas.drawText(context.getString(R.string.gameover), rectWidth, rectWidth, paint);
-            canvas.drawText(context.getString(R.string.pressAny), rectWidth, rectWidth * 3, paint);
+                    byte[][] colors = game.getStack();
+
+                    // Paint the stack onto the canvas (and therefore onto the bitmap. Top two rows aren't drawn.
+                    for(int i = 0; i <= 20; i++)
+                        for(int j = 0; j < 10; j++)
+                            // The canvas is already black so we don't have to draw that.
+                            if(colors[i][j] != 0)
+                            {
+                                tile = htShapes[colors[i][j]];
+                                tile.setBounds(j * rectWidth,
+                                        (20 - i) * rectWidth - rectWidth,
+                                        j * rectWidth + rectWidth,
+                                        (20 - i) * rectWidth);
+                                tile.draw(stack);
+                            }
+                    game.clearLastBlock();
+                }
+                else if(lastBlock != null)
+                {
+                    // If a block was locked but no lines cleared, just draw that block onto the stack image
+                    // No need to redraw the whole thing since the old tiles didn't change.
+                    Canvas stack = new Canvas(stackState);
+                    drawBlock(lastBlock, stack);
+                    game.clearLastBlock();
+                }
+
+                canvas.drawBitmap(stackState, 0, 0, new Paint());
+
+                // Paint the active piece onto the canvas
+                Block currentBlock = game.getCurrentBlock();
+                if(currentBlock != null)
+                    drawBlock(currentBlock, canvas);
+
+                // Update the views and play sounds
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        activity.setScore(game.getScore());
+                        activity.setLevel(game.getLevel(), game.getMaxLevel());
+                        activity.setNextPiece(game.getNextBlock().getBlockID());
+                    }
+                });
+            }
+
+            if(game.getGameOver() != null)
+            {
+                // Stop the thread
+                thread.setRunning(false);
+                // Draw a message
+                Paint paint = new Paint();
+                paint.setTextSize(rectWidth);
+
+                // shadow
+                paint.setColor(Color.DKGRAY);
+                canvas.drawText(context.getString(R.string.gameover), rectWidth + 2, rectWidth + 2, paint);
+                canvas.drawText(context.getString(R.string.pressAny), rectWidth + 2, rectWidth * 3 + 2, paint);
+
+                paint.setColor(Color.WHITE);
+                canvas.drawText(context.getString(R.string.gameover), rectWidth, rectWidth, paint);
+                canvas.drawText(context.getString(R.string.pressAny), rectWidth, rectWidth * 3, paint);
+            }
         }
     }
 
     private void drawBlock(Block block, Canvas canvas)
     {
-        NinePatchDrawable tile = htShapes.get(block.getBlockID());
+        NinePatchDrawable tile = htShapes[block.getBlockID()];
         for (Point coord : block.getAbsoluteCoordinates())
         {
             tile.setBounds(coord.x * rectWidth,
@@ -245,7 +246,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public GameManager getGame() { return game; }
-    public void stop() { thread.setRunning(false); }
-    public void start() { thread.setRunning(true); }
+    public void stop() { if(thread != null) thread.setRunning(false); }
+    public void start() { if(thread != null) thread.setRunning(true); }
     public boolean getRedraw() { return game.getPieceRedraw() || game.getStackRedraw(); }
 }

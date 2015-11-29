@@ -34,8 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/btnDrop"
-            android:tag="drop"
+            android:id="@+id/btnDown2"
+            android:tag="down"
             android:text="D"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
@@ -132,8 +132,8 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/btnDown"
-            android:tag="drop"
-            android:text="sD"
+            android:tag="down"
+            android:text="D"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 

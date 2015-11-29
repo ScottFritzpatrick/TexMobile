@@ -3,6 +3,7 @@ package ca.alexcomeau.texmobile;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -120,6 +121,7 @@ public class GameManager implements Parcelable {
 
                     spawnWait = 0;
                     fallWait = 0;
+                    droppedLines = 1;
 
                     // A new block appearing increases the level by one, unless the level ends in 99 or is the second last
                     if(!((level + 1) % 100 == 0 || level == maxLevel - 1))
@@ -128,8 +130,6 @@ public class GameManager implements Parcelable {
             }
             if(currentBlock != null)
             {
-                droppedLines = 1;
-
                 // Check if the received input is the same as last frame
                 if(input.equals(lastInput))
                 {
@@ -153,9 +153,6 @@ public class GameManager implements Parcelable {
 
                 switch(input)
                 {
-                    case "drop":
-                        drop();
-                        break;
                     case "left":
                         moveLeft();
                         break;
@@ -169,8 +166,13 @@ public class GameManager implements Parcelable {
                         rotateRight();
                         break;
                     case "down":
+                    {
+                        // Make the piece fall or lock immediately
+                        lockWait = LOCK_DELAY;
                         fallWait = gravity;
+                        droppedLines++;
                         break;
+                    }
                     default:
                         break;
                 }
@@ -187,7 +189,8 @@ public class GameManager implements Parcelable {
                     // Move the block down if enough time has passed
                     if(gravity > 0)
                     {
-                        if(fallWait++ >= gravity)
+                        fallWait++;
+                        if(fallWait >= gravity)
                         {
                             fallWait = 0;
                             currentBlock.moveDown();
@@ -195,17 +198,20 @@ public class GameManager implements Parcelable {
                         }
                     }
                     else
+                    {
                         for(int i = 0; i < superGravity; i++)
                             if(gameBoard.checkDown(currentBlock))
                             {
                                 currentBlock.moveDown();
                                 pieceRedraw = true;
                             }
+                    }
                 }
                 else
                 {
+                    lockWait++;
                     // Check if the block needs to be locked
-                    if(lockWait++ >= LOCK_DELAY)
+                    if(lockWait >= LOCK_DELAY)
                     {
                         gameBoard.lockBlock(currentBlock);
                         lockWait = 0;
@@ -221,19 +227,6 @@ public class GameManager implements Parcelable {
     }
 
     // ===== Input handling methods ==========================================
-    private void drop()
-    {
-        // Count the number of lines the piece falls
-        while(gameBoard.checkDown(currentBlock))
-        {
-            currentBlock.moveDown();
-            droppedLines++;
-            pieceRedraw = true;
-        }
-
-        lockWait = LOCK_DELAY;
-    }
-
     private void moveLeft()
     {
         if(gameBoard.checkLeft(currentBlock))
