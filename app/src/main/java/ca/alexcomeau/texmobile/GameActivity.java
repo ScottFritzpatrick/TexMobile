@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameActivity extends AppCompatActivity implements Serializable{
+public class GameActivity extends AppCompatActivity implements Serializable {
     private GameView gameView;
     private String input;
     private MediaPlayer mp;
@@ -32,7 +32,7 @@ public class GameActivity extends AppCompatActivity implements Serializable{
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mediaplayer)
             {
-                mediaplayer = MediaPlayer.create(getBaseContext(), R.raw.all_of_us);
+                mediaplayer.seekTo(0);
                 mediaplayer.start();
             }
         });

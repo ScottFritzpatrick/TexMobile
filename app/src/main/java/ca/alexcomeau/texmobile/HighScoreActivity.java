@@ -24,7 +24,7 @@ public class HighScoreActivity extends AppCompatActivity {
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mediaplayer)
             {
-                mediaplayer = MediaPlayer.create(getBaseContext(), R.raw.chibi_ninja);
+                mediaplayer.seekTo(0);
                 mediaplayer.start();
             }
         });

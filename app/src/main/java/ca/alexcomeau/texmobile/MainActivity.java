@@ -27,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
 
         mp = MediaPlayer.create(this, R.raw.chibi_ninja);
 
-        // setLooping doesn't work with the AwesomePlayer
+        // setLooping doesn't work with the "AwesomePlayer"
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mediaplayer)
             {
-                mediaplayer = MediaPlayer.create(getBaseContext(), R.raw.chibi_ninja);
+                mediaplayer.seekTo(0);
                 mediaplayer.start();
             }
         });
