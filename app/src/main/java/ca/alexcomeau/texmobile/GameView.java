@@ -6,11 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.NinePatchDrawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
@@ -29,7 +27,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     private TextView txtLevel;
     private int rectWidth;
     private boolean gameStarted;
-    private Hashtable<Integer, NinePatchDrawable> htShapes;
+    private Hashtable<Byte, NinePatchDrawable> htShapes;
     private Bitmap stackState;
     int width, height;
 
@@ -98,15 +96,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
         htShapes = new Hashtable<>();
 
-        // Get all the drawables
-        htShapes.put(Color.BLUE, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_blue));
-        htShapes.put(Color.GREEN, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_green));
-        htShapes.put(Color.RED, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_red));
-        htShapes.put(Color.YELLOW, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_yellow));
-        htShapes.put(Color.rgb(255,165,0), (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_orange));
-        htShapes.put(Color.CYAN, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_cyan));
-        htShapes.put(Color.BLUE, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_blue));
-        htShapes.put(Color.MAGENTA, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_magenta));
+        // Get all the drawables and associate them with the IDs
+        htShapes.put(Block.I, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_red));
+        htShapes.put(Block.J, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_blue));
+        htShapes.put(Block.L, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_orange));
+        htShapes.put(Block.O, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_yellow));
+        htShapes.put(Block.S, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_magenta));
+        htShapes.put(Block.T, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_cyan));
+        htShapes.put(Block.Z, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_green));
     }
 
 
@@ -142,9 +139,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void update()
     {
         if(gameStarted)
-        {
             game.advanceFrame(activity.getInput());
-        }
     }
 
     public void render(Canvas canvas)
@@ -154,22 +149,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             // Set up the rectangle width based on the canvas size
             rectWidth = canvas.getWidth() / 10;
 
+            // If this is the first run, or the orientation changed, remake the bitmap
+            if(stackState.getWidth() != canvas.getWidth())
+                stackState = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+
             NinePatchDrawable tile;
             canvas.drawColor(Color.BLACK);
+            Block lastBlock = game.getLastBlock();
 
             if(game.getStackRedraw())
             {
-                stackState = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+                // Draw the stack onto a bitmap so we can avoid drawing it over and over
                 Canvas stack = new Canvas(stackState);
                 stack.drawColor(Color.BLACK);
 
-                int[][] colors = game.getStack();
-                // Paint the stack onto the canvas. Top two rows aren't drawn.
+                byte[][] colors = game.getStack();
+
+                // Paint the stack onto the canvas (and therefore onto the bitmap. Top two rows aren't drawn.
                 for(int i = 0; i <= 20; i++)
                     for(int j = 0; j < 10; j++)
-                    {
-                        // The canvas is already black so we don't have to draw those.
-                        if(colors[i][j] != Color.BLACK)
+                        // The canvas is already black so we don't have to draw that.
+                        if(colors[i][j] != 0)
                         {
                             tile = htShapes.get(colors[i][j]);
                             tile.setBounds(j * rectWidth,
@@ -178,7 +178,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                                     (20 - i) * rectWidth);
                             tile.draw(stack);
                         }
-                    }
+                game.clearLastBlock();
+            }
+            else if(lastBlock != null)
+            {
+                // If a block was locked but no lines cleared, just draw that block onto the stack image
+                // No need to redraw the whole thing since the old tiles didn't change.
+                Canvas stack = new Canvas(stackState);
+                tile = htShapes.get(lastBlock.getBlockID());
+                for (Point coord : lastBlock.getAbsoluteCoordinates())
+                {
+                    tile.setBounds(coord.x * rectWidth,
+                            (20 - coord.y) * rectWidth - rectWidth,
+                            coord.x * rectWidth + rectWidth,
+                            (20 - coord.y) * rectWidth);
+                    tile.draw(stack);
+                }
+
+                // Let go of the last block.
+                game.clearLastBlock();
             }
 
             canvas.drawBitmap(stackState, 0, 0, new Paint());
@@ -187,7 +205,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             Block currentPiece = game.getCurrentBlock();
             if (currentPiece != null)
             {
-                tile = htShapes.get(currentPiece.getBlockColor());
+                // Pieces are always the same color so we only need to get it once
+                tile = htShapes.get(currentPiece.getBlockID());
+
                 for (Point coord : currentPiece.getAbsoluteCoordinates())
                 {
                     tile.setBounds(coord.x * rectWidth,
@@ -198,7 +218,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                 }
             }
 
-            // Update the text views
+            // Update the text views and play sounds
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run()
@@ -227,7 +247,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             paint.setColor(Color.WHITE);
             canvas.drawText(context.getString(R.string.gameover), rectWidth, rectWidth, paint);
             canvas.drawText(context.getString(R.string.pressAny), rectWidth, rectWidth * 3, paint);
-
         }
     }
 

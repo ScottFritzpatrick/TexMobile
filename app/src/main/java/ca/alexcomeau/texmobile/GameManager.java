@@ -11,6 +11,7 @@ import ca.alexcomeau.texmobile.blocks.*;
 public class GameManager implements Parcelable {
     private Block currentBlock;
     private Block nextBlock;
+    private Block lastBlock;
     private Board gameBoard;
     private int level;
     private int score;
@@ -199,9 +200,9 @@ public class GameManager implements Parcelable {
                         gameBoard.lockBlock(currentBlock);
                         lockWait = 0;
                         soundEffectToPlay = 0;
-                        stackRedraw = true;
                         // Check if locking that piece caused any lines to be cleared
                         checkClears();
+                        lastBlock = currentBlock;
                         currentBlock = null;
                     }
                 }
@@ -335,6 +336,7 @@ public class GameManager implements Parcelable {
                 gameOver = true;
             }
 
+            stackRedraw = true;
             soundEffectToPlay = 1;
             lineClearWait = 0;
         }
@@ -503,7 +505,7 @@ public class GameManager implements Parcelable {
             return "S9";
     }
 
-    public int[][] getStack() { return gameBoard.getStack(); }
+    public byte[][] getStack() { return gameBoard.getStack(); }
     public int getLevel() { return level; }
     public int getMaxLevel() { return maxLevel; }
     public int getScore() { return score; }
@@ -513,6 +515,8 @@ public class GameManager implements Parcelable {
     public Block getCurrentBlock() { return currentBlock; }
     public boolean getStackRedraw() { return stackRedraw; }
     public boolean getPieceRedraw() { return pieceRedraw; }
+    public Block getLastBlock() { return lastBlock; }
+    public void clearLastBlock() { lastBlock = null; }
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {

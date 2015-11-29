@@ -1,6 +1,5 @@
 package ca.alexcomeau.texmobile;
 
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,17 +10,17 @@ import ca.alexcomeau.texmobile.blocks.Block;
 
 
 public class Board implements Parcelable {
-    private int[][] stack;
+    private byte[][] stack;
 
     public Board()
     {
         // [Y][X] -- makes things a lot easier
-        stack = new int[22][10];
+        stack = new byte[22][10];
 
-        // Initialize all the colors to be black
+        // Initialize as blank
         for(int i = 0; i < 22; i++)
             for(int j = 0; j < 10; j++)
-                stack[i][j] = Color.BLACK;
+                stack[i][j] = 0;
     }
 
     // Checks whether the block is currently in a legal position.
@@ -33,7 +32,7 @@ public class Board implements Parcelable {
         {
             if(c.y < 0 || c.x < 0 || c.x >= stack[0].length)
                 return false;
-            if (stack[c.y][c.x] != Color.BLACK)
+            if (stack[c.y][c.x] != 0)
                 return false;
         }
         return true;
@@ -94,8 +93,8 @@ public class Board implements Parcelable {
     {
         for(int col : stack[line])
         {
-            // Check each cell in the specified row. If black is found, that means there is an empty cell.
-            if (col == Color.BLACK)
+            // Check each cell in the specified row. If 0 is found, that means there is an empty cell.
+            if (col == 0)
                 return false;
         }
         return true;
@@ -104,9 +103,9 @@ public class Board implements Parcelable {
     // Clears all the blocks from the specified line.
     public void clearLine(int line)
     {
-        // Set the cells to black.
+        // Set the cells to blank.
         for(int j = 0; j < 10; j++)
-            stack[line][j] = Color.BLACK;
+            stack[line][j] = 0;
 
         // Lower all the other lines by copying the lines above them
         for(int k = line; k < 21; k++)
@@ -120,16 +119,16 @@ public class Board implements Parcelable {
     {
         // Color in the places the block is over
         for(Point c : block.getAbsoluteCoordinates())
-            stack[c.y][c.x] = block.getBlockColor();
+            stack[c.y][c.x] = block.getBlockID();
     }
 
-    public int[][] getStack() { return stack; }
+    public byte[][] getStack() { return stack; }
 
     public boolean equals(Board other) { return Arrays.equals(stack, other.getStack()); }
 
     // ===== Parcelable Stuff ============================
     protected Board(Parcel in) {
-        stack = (int[][]) in.readSerializable();
+        stack = (byte[][]) in.readSerializable();
     }
 
     @Override

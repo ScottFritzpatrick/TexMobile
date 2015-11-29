@@ -1,6 +1,5 @@
 package ca.alexcomeau.texmobile.blocks;
 
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,7 +11,7 @@ public class BlockO extends Block {
                 new Point[][]{
                         {new Point(1,2),new Point(2,2),new Point(1,1),new Point(2,1)}
                 },
-                Color.YELLOW);
+                Block.O);
     }
 
     // Overrides -- the O block can't rotate so these can be simplified

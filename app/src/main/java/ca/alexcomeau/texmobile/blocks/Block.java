@@ -7,15 +7,24 @@ import android.os.Parcelable;
 public abstract class Block implements Parcelable {
     protected int rotation;
     protected Point position;
-    protected int blockColor;
+    protected byte blockID;
     // Nested arrays should be based on a 4x4 grid. Points need to be in descending order based on y.
     protected Point[][] rotations;
 
-    public Block(Point start, Point[][] rotate, int color)
+    // Block identifiers
+    public static byte I = 1;
+    public static byte J = 2;
+    public static byte L = 3;
+    public static byte O = 4;
+    public static byte S = 5;
+    public static byte T = 6;
+    public static byte Z = 7;
+
+    public Block(Point start, Point[][] rotate, byte color)
     {
         rotation = 0;
         position = new Point(start);
-        blockColor = color;
+        blockID = color;
         rotations = rotate;
     }
 
@@ -52,7 +61,7 @@ public abstract class Block implements Parcelable {
         return coords;
     }
 
-    public int getBlockColor() { return blockColor; }
+    public byte getBlockID() { return blockID; }
     public Point getPosition() { return position; }
     public Point[] getRelativeCoordinates() { return rotations[rotation]; }
 
@@ -60,7 +69,7 @@ public abstract class Block implements Parcelable {
     protected Block(Parcel in) {
         rotation = in.readInt();
         position = (Point) in.readValue(Point.class.getClassLoader());
-        blockColor = in.readInt();
+        blockID = in.readByte();
         int length = in.readInt();
         rotations = new Point[length][4];
 
@@ -77,7 +86,7 @@ public abstract class Block implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(rotation);
         dest.writeValue(position);
-        dest.writeInt(blockColor);
+        dest.writeByte(blockID);
         dest.writeInt(rotations.length);
         for(Point[] p : rotations)
             dest.writeArray(p);
