@@ -185,38 +185,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                 // If a block was locked but no lines cleared, just draw that block onto the stack image
                 // No need to redraw the whole thing since the old tiles didn't change.
                 Canvas stack = new Canvas(stackState);
-                tile = htShapes.get(lastBlock.getBlockID());
-                for (Point coord : lastBlock.getAbsoluteCoordinates())
-                {
-                    tile.setBounds(coord.x * rectWidth,
-                            (20 - coord.y) * rectWidth - rectWidth,
-                            coord.x * rectWidth + rectWidth,
-                            (20 - coord.y) * rectWidth);
-                    tile.draw(stack);
-                }
-
-                // Let go of the last block.
+                drawBlock(lastBlock, stack);
                 game.clearLastBlock();
             }
 
             canvas.drawBitmap(stackState, 0, 0, new Paint());
 
             // Paint the active piece onto the canvas
-            Block currentPiece = game.getCurrentBlock();
-            if (currentPiece != null)
-            {
-                // Pieces are always the same color so we only need to get it once
-                tile = htShapes.get(currentPiece.getBlockID());
-
-                for (Point coord : currentPiece.getAbsoluteCoordinates())
-                {
-                    tile.setBounds(coord.x * rectWidth,
-                            (20 - coord.y) * rectWidth - rectWidth,
-                            coord.x * rectWidth + rectWidth,
-                            (20 - coord.y) * rectWidth);
-                    tile.draw(canvas);
-                }
-            }
+            Block currentBlock = game.getCurrentBlock();
+            if (currentBlock != null)
+                drawBlock(currentBlock, canvas);
 
             // Update the text views and play sounds
             activity.runOnUiThread(new Runnable() {
@@ -226,7 +204,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                     txtScore.setText(String.format(activity.getString(R.string.score), game.getScore()));
                     txtLevel.setText(String.format(activity.getString(R.string.level), game.getLevel(), game.getMaxLevel()));
                     if(game.getSoundEffectToPlay() > -1)
+                    {
                         activity.playSound(game.getSoundEffectToPlay());
+                        game.clearSoundEffect();
+                    }
                 }
             });
         }
@@ -247,6 +228,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             paint.setColor(Color.WHITE);
             canvas.drawText(context.getString(R.string.gameover), rectWidth, rectWidth, paint);
             canvas.drawText(context.getString(R.string.pressAny), rectWidth, rectWidth * 3, paint);
+        }
+    }
+
+    private void drawBlock(Block block, Canvas canvas)
+    {
+        NinePatchDrawable tile = htShapes.get(block.getBlockID());
+        for (Point coord : block.getAbsoluteCoordinates())
+        {
+            tile.setBounds(coord.x * rectWidth,
+                    (20 - coord.y) * rectWidth - rectWidth,
+                    coord.x * rectWidth + rectWidth,
+                    (20 - coord.y) * rectWidth);
+            tile.draw(canvas);
         }
     }
 

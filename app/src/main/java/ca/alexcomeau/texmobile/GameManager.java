@@ -41,16 +41,18 @@ public class GameManager implements Parcelable {
     // When the game ends
     private int maxLevel;
 
-    // Blocks lock in place LOCK_DELAY frames after touching the stack.
+    // Blocks lock in place LOCK_DELAY frames after touching the stack. Gives time to rotate and move, especially in superGravity 20.
     private final int LOCK_DELAY = 15;
     // Where pieces spawn
     private final Point START = new Point(3,17);
     // Pieces are spawned SPAWN_DELAY frames after a piece is locked.
     private final int SPAWN_DELAY = 15;
-    // Frames to wait before allowing consecutive duplicate inputs
+    // Frames to wait before allowing consecutive duplicate inputs. Too low and they get accidentally doubled
     private final int AUTO_SHIFT_DELAY = 7;
-    // Frames to wait after a line is cleared before doing anything else
+    // Frames to wait after a line is cleared before doing anything else. Rewards multiline clears.
     private final int LINE_CLEAR_DELAY = 21;
+    // Number of times to attempt to generate a piece that's not in history
+    private final int GENERATION_TRIES = 4;
 
     public GameManager(){ }
 
@@ -96,27 +98,25 @@ public class GameManager implements Parcelable {
     // Move ahead a frame
     public void advanceFrame(String input)
     {
+        boolean spawned = false;
         pieceRedraw = false;
         stackRedraw = false;
-        soundEffectToPlay = -1;
         elapsedFrames++;
 
         if(lineClearWait < LINE_CLEAR_DELAY)
             lineClearWait ++;
         else
         {
-            // If a block was placed last frame, swap it for the next one and generate a new next.
             if(currentBlock == null)
             {
                 if(spawnWait++ >= SPAWN_DELAY)
                 {
+                    // Bring in the next block and generate a new next
                     currentBlock = nextBlock;
                     nextBlock = generateNewBlock();
                     pieceRedraw = true;
 
-                    // If the new block isn't in a valid location, the game is lost
-                    if(!gameBoard.checkBlock(currentBlock))
-                        gameOver = false;
+                    spawned = true;
 
                     spawnWait = 0;
                     fallWait = 0;
@@ -126,7 +126,7 @@ public class GameManager implements Parcelable {
                         addLevel(1);
                 }
             }
-            else
+            if(currentBlock != null)
             {
                 droppedLines = 1;
 
@@ -145,6 +145,11 @@ public class GameManager implements Parcelable {
                     lastInput = input;
                     autoShiftWait = 0;
                 }
+
+                //When a piece spawns, the only acceptable moves are rotations
+                if(spawned)
+                    if(!(input.equals("rotateLeft") || input.equals("rotateRight")))
+                        input = "";
 
                 switch(input)
                 {
@@ -169,6 +174,11 @@ public class GameManager implements Parcelable {
                     default:
                         break;
                 }
+
+                // If the new block isn't in a valid location upon spawning (and rotating), the game is lost
+                if(spawned)
+                    if(!gameBoard.checkBlock(currentBlock))
+                        gameOver = false;
 
                 // Check if the block is currently in a state of falling
                 if(gameBoard.checkDown(currentBlock))
@@ -248,7 +258,7 @@ public class GameManager implements Parcelable {
             currentBlock.rotateLeft();
             pieceRedraw = true;
         }
-        else
+        else if (currentBlock.getBlockID() != Block.I) // I blocks can't wall kick
         {
             // See if the rotation would be valid if the block was tapped to the side (wall kick)
             currentBlock.moveRight();
@@ -272,7 +282,7 @@ public class GameManager implements Parcelable {
             currentBlock.rotateRight();
             pieceRedraw = true;
         }
-        else
+        else if (currentBlock.getBlockID() != Block.I) // I blocks can't wall kick
         {
             // See if the rotation would be valid if the block was tapped to the side (wall kick)
             currentBlock.moveLeft();
@@ -310,9 +320,10 @@ public class GameManager implements Parcelable {
 
         if(linesCleared > 0)
         {
+            // They only combo if they clear more than one line
             combo += (linesCleared * 2) - 2;
 
-            // Bonus for clearing the whole screen
+            // Multiplier for clearing the whole screen
             int bravo = gameBoard.equals(new Board()) ? 4 : 1;
 
             // Tetris: The Grand Master scoring method
@@ -373,10 +384,10 @@ public class GameManager implements Parcelable {
     private Block generateNewBlock()
     {
         int i = (int)(Math.random() * 7);
-        int j = 1;
+        int j = 0;
 
-        // Generate a new number until there's one that's not in the history, or 4 attempts
-        while(history.contains(i) && j < 5)
+        // Generate a new number until there's one that's not in the history, or the limit is reached
+        while(history.contains(i) && j < GENERATION_TRIES)
         {
             i = (int)(Math.random() * 7);
             j++;
@@ -517,6 +528,7 @@ public class GameManager implements Parcelable {
     public boolean getPieceRedraw() { return pieceRedraw; }
     public Block getLastBlock() { return lastBlock; }
     public void clearLastBlock() { lastBlock = null; }
+    public void clearSoundEffect() { soundEffectToPlay = -1; }
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {
