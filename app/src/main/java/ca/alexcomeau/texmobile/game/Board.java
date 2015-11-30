@@ -103,11 +103,7 @@ public class Board implements Parcelable {
     // Clears all the blocks from the specified line.
     public void clearLine(int line)
     {
-        // Set the cells to blank.
-        for(int j = 0; j < 10; j++)
-            stack[line][j] = 0;
-
-        // Lower all the other lines by copying the lines above them
+        // Lower all the above lines by one
         for(int k = line; k < 21; k++)
             System.arraycopy(stack[k + 1], 0, stack[k], 0, 10);
 

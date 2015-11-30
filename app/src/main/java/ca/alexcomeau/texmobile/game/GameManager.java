@@ -108,6 +108,22 @@ public class GameManager implements Parcelable {
             lineClearWait ++;
         else
         {
+            // Check if the received input is the same as last frame
+            if(input.equals(lastInput))
+            {
+                // If so, wait some frames before accepting it again to avoid unintentional doubled inputs
+                // This needs to be checked even if there's no piece so they can "charge" fast movement
+                if(autoShiftWait < AUTO_SHIFT_DELAY && !input.equals(""))
+                {
+                    autoShiftWait++;
+                    input = "";
+                }
+            }
+            else
+            {
+                lastInput = input;
+                autoShiftWait = 0;
+            }
             if(currentBlock == null)
             {
                 if(spawnWait++ >= SPAWN_DELAY)
@@ -130,22 +146,6 @@ public class GameManager implements Parcelable {
             }
             if(currentBlock != null)
             {
-                // Check if the received input is the same as last frame
-                if(input.equals(lastInput))
-                {
-                    // If so, wait some frames before accepting it again to avoid unintentional doubled inputs
-                    if(autoShiftWait < AUTO_SHIFT_DELAY && !input.equals(""))
-                    {
-                        autoShiftWait++;
-                        input = "";
-                    }
-                }
-                else
-                {
-                    lastInput = input;
-                    autoShiftWait = 0;
-                }
-
                 //When a piece spawns, the only acceptable moves are rotations
                 if(spawned)
                     if(!(input.equals("rotateLeft") || input.equals("rotateRight")))
@@ -301,15 +301,15 @@ public class GameManager implements Parcelable {
         ArrayList<Integer> toCheck = new ArrayList<>();
         for(Point c : currentBlock.getAbsoluteCoordinates())
             if (!toCheck.contains(c.y))
-                toCheck.add(c.y);
-
-        // Check each of those rows
-        for(Integer i : toCheck)
-            if (gameBoard.checkLine(i))
             {
-                gameBoard.clearLine(i);
-                linesCleared++;
+                toCheck.add(c.y);
+                if (gameBoard.checkLine(c.y))
+                {
+                    gameBoard.clearLine(c.y);
+                    linesCleared++;
+                }
             }
+
 
         if(linesCleared > 0)
         {
