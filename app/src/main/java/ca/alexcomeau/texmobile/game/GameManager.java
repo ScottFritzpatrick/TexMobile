@@ -313,9 +313,6 @@ public class GameManager implements Parcelable {
 
         if(linesCleared > 0)
         {
-            // They only combo if they clear more than one line
-            combo += (linesCleared * 2) - 2;
-
             // Multiplier for clearing the whole screen
             int bravo = gameBoard.equals(new Board()) ? 4 : 1;
 
@@ -323,6 +320,9 @@ public class GameManager implements Parcelable {
             score += (Math.ceil((level + linesCleared) / 4) + droppedLines)
                     * linesCleared * ((linesCleared * 2) - 1)
                     * combo * bravo;
+
+            // They only combo if they clear more than one line
+            combo += (linesCleared * 2) - 2;
 
             addLevel(linesCleared);
 
