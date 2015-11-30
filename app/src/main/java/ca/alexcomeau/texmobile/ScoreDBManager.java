@@ -53,9 +53,9 @@ public class ScoreDBManager {
         values.put("grade", grade);
         db.insert("tblScores", null, values);
 
-        cursor = db.rawQuery("DELETE FROM tblScores WHERE id NOT IN " +
-                             "(SELECT id FROM tblScores ORDER BY score DESC, duration ASC LIMIT" +
-                             MAX_SCORES + ")", null);
+        db.execSQL("DELETE FROM tblScores WHERE id NOT IN " +
+                             "(SELECT id FROM tblScores ORDER BY score DESC, duration ASC LIMIT " +
+                             MAX_SCORES + ")");
 
         return true;
     }
