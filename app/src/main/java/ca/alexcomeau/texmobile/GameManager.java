@@ -72,9 +72,10 @@ public class GameManager implements Parcelable {
         stackRedraw = false;
         elapsedFrames = 0;
         spawnWait = 0;
-        lockWait = LOCK_DELAY;
+        lockWait = 0;
         autoShiftWait = 0;
         fallWait = 0;
+        soundEffectToPlay = -1;
         lineClearWait = LINE_CLEAR_DELAY;
         lastInput = "";
 
