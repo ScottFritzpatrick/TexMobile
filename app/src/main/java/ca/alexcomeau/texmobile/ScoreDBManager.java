@@ -11,6 +11,7 @@ import java.util.List;
 public class ScoreDBManager {
     private final String DATABASE_NAME = "scoresdb";
     private final int DATABASE_VERSION = 1;
+    private final int MAX_SCORES = 20;
 
     private Cursor cursor;
     private SQLiteDatabase db;
@@ -51,6 +52,10 @@ public class ScoreDBManager {
         values.put("duration", time);
         values.put("grade", grade);
         db.insert("tblScores", null, values);
+
+        cursor = db.rawQuery("DELETE FROM tblScores WHERE id NOT IN " +
+                             "(SELECT id FROM tblScores ORDER BY score DESC, duration ASC LIMIT" +
+                             MAX_SCORES + ")", null);
 
         return true;
     }

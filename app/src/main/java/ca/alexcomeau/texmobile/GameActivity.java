@@ -26,6 +26,7 @@ public class GameActivity extends AppCompatActivity implements Serializable {
     private MediaPlayer mp;
     private SoundPool sp;
     private int[] soundEffects;
+    private float volume;
     private ImageView imgNext;
     private TextView txtScore;
     private TextView txtLevel;
@@ -42,8 +43,9 @@ public class GameActivity extends AppCompatActivity implements Serializable {
         txtLevel = (TextView) findViewById(R.id.txtLevel);
         imgNext = (ImageView) findViewById(R.id.imgNext);
 
+        volume = getSharedPreferences("volume", 0).getInt("music", 100) / 100.0f;
         mp = MediaPlayer.create(this, R.raw.all_of_us);
-        mp.setVolume(0.5f, 0.5f);
+        mp.setVolume(0.5f * volume, 0.5f * volume);
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mediaplayer)
             {
@@ -57,6 +59,7 @@ public class GameActivity extends AppCompatActivity implements Serializable {
         soundEffects = new int[2];
         soundEffects[0] = sp.load(this, R.raw.piece_lock, 1);
         soundEffects[1] = sp.load(this, R.raw.line_clear, 1);
+        volume = getSharedPreferences("volume", 0).getInt("sound", 100) / 100.0f;
 
         // Get all the drawables
         nextPieces = new NinePatchDrawable[8];
@@ -112,7 +115,7 @@ public class GameActivity extends AppCompatActivity implements Serializable {
 
     public void playSound(int i)
     {
-        sp.play(soundEffects[i], 1, 1, 1, 0, 1.0f);
+        sp.play(soundEffects[i], volume, volume, 1, 0, 1.0f);
     }
 
     private void gameOver()

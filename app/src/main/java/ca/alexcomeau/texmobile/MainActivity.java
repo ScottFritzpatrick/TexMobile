@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private MediaPlayer mp;
+    private int startLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -25,8 +26,9 @@ public class MainActivity extends AppCompatActivity {
         TextView txtCredits = (TextView) findViewById(R.id.txtCredits);
         txtCredits.setMovementMethod(LinkMovementMethod.getInstance());
 
+        float volume = getSharedPreferences("volume", 0).getInt("music", 100) / 100.0f;
         mp = MediaPlayer.create(this, R.raw.chibi_ninja);
-        mp.setVolume(0.7f, 0.7f);
+        mp.setVolume(0.7f * volume, 0.7f * volume);
 
         // setLooping doesn't work with the "AwesomePlayer"
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -82,10 +84,33 @@ public class MainActivity extends AppCompatActivity {
     public void btnClick(View v)
     {
         Intent intent = new Intent("ca.alexcomeau.texmobile.Game");
-        //TODO: Add a drop down or something to select the starting level.
-        intent.putExtra("startLevel", 0);
-        intent.putExtra("maxLevel", Integer.parseInt(v.getTag().toString()));
+        int maxLevel = Integer.parseInt(v.getTag().toString());
+
+        // Don't start then immediately win
+        if(startLevel >= maxLevel)
+            startLevel = maxLevel - 100;
+
+        intent.putExtra("startLevel", startLevel);
+        intent.putExtra("maxLevel", maxLevel);
         finish();
         startActivity(intent);
+    }
+
+    public void btnSettingsClick(View v)
+    {
+        Intent intent = new Intent("ca.alexcomeau.texmobile.Settings");
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK)
+        {
+            float volume = getSharedPreferences("volume", 0).getInt("music", 100) / 100.0f;
+            mp.setVolume(0.7f * volume, 0.7f * volume);
+            startLevel = data.getIntExtra("start", 0);
+        }
     }
 }

@@ -20,8 +20,9 @@ public class HighScoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scores);
 
         // Start the tunes
+        float volume = getSharedPreferences("volume", 0).getInt("music", 100) / 100.0f;
         mp = MediaPlayer.create(this, R.raw.chibi_ninja);
-        mp.setVolume(0.7f, 0.7f);
+        mp.setVolume(0.7f * volume, 0.7f * volume);
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mediaplayer)
             {
