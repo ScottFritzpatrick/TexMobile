@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.db;
 
 // Data class
 public class Score {

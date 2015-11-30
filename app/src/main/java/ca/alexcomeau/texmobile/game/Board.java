@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.game;
 
 import android.graphics.Point;
 import android.os.Parcel;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import java.util.Arrays;
 
-import ca.alexcomeau.texmobile.blocks.Block;
+import ca.alexcomeau.texmobile.game.blocks.Block;
 
 
 public class Board implements Parcelable {

@@ -1,13 +1,12 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.game;
 
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import ca.alexcomeau.texmobile.blocks.*;
+import ca.alexcomeau.texmobile.game.blocks.*;
 
 public class GameManager implements Parcelable {
     private Block currentBlock;

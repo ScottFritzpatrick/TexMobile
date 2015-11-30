@@ -11,7 +11,7 @@
             android:layout_marginStart="5dp"
             android:layout_above="@+id/controls"
             android:layout_toStartOf="@+id/infoBox">
-            <ca.alexcomeau.texmobile.GameView
+            <ca.alexcomeau.texmobile.game.GameView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/svBoard" />

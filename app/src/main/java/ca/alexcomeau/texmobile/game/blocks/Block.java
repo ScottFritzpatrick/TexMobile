@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile.blocks;
+package ca.alexcomeau.texmobile.game.blocks;
 
 import android.graphics.Point;
 import android.os.Parcel;
@@ -12,13 +12,13 @@ public abstract class Block implements Parcelable {
     protected Point[][] rotations;
 
     // Block identifiers
-    public static byte I = 1;
-    public static byte J = 2;
-    public static byte L = 3;
-    public static byte O = 4;
-    public static byte S = 5;
-    public static byte T = 6;
-    public static byte Z = 7;
+    public static final byte I = 1;
+    public static final byte J = 2;
+    public static final byte L = 3;
+    public static final byte O = 4;
+    public static final byte S = 5;
+    public static final byte T = 6;
+    public static final byte Z = 7;
 
     public Block(Point start, Point[][] rotate, byte color)
     {

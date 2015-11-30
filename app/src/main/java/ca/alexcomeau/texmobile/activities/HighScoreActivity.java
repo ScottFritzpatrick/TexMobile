@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.activities;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -9,6 +9,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import java.util.List;
+
+import ca.alexcomeau.texmobile.R;
+import ca.alexcomeau.texmobile.db.Score;
+import ca.alexcomeau.texmobile.db.ScoreDBManager;
 
 public class HighScoreActivity extends AppCompatActivity {
     private MediaPlayer mp;

@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.NinePatchDrawable;
@@ -14,13 +14,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.alexcomeau.texmobile.blocks.Block;
+import ca.alexcomeau.texmobile.game.GameManager;
+import ca.alexcomeau.texmobile.game.GameView;
+import ca.alexcomeau.texmobile.R;
+import ca.alexcomeau.texmobile.db.ScoreDBManager;
+import ca.alexcomeau.texmobile.game.blocks.Block;
 
-public class GameActivity extends AppCompatActivity implements Serializable {
+public class GameActivity extends AppCompatActivity{
     private GameView gameView;
     private String input;
     private MediaPlayer mp;

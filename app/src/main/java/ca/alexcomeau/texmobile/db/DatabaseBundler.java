@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.db;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class DatabaseBundler {
-    Context baseContext;
+    private Context baseContext;
 
     public DatabaseBundler(Context base) { baseContext = base; }
 

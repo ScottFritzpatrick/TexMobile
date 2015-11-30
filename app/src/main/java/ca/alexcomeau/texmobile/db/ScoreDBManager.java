@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -54,8 +54,8 @@ public class ScoreDBManager {
         db.insert("tblScores", null, values);
 
         db.execSQL("DELETE FROM tblScores WHERE id NOT IN " +
-                             "(SELECT id FROM tblScores ORDER BY score DESC, duration ASC LIMIT " +
-                             MAX_SCORES + ")");
+                           "(SELECT id FROM tblScores ORDER BY score DESC, duration ASC LIMIT " +
+                           MAX_SCORES + ")");
 
         return true;
     }

@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,8 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import ca.alexcomeau.texmobile.R;
+
 public class EnterScoreActivity extends AppCompatActivity {
-    EditText txtName;
+    private EditText txtName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.activities;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
+
+import ca.alexcomeau.texmobile.db.DatabaseBundler;
+import ca.alexcomeau.texmobile.R;
 
 public class MainActivity extends AppCompatActivity {
     private MediaPlayer mp;

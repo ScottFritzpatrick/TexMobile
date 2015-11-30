@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile.blocks;
+package ca.alexcomeau.texmobile.game.blocks;
 
 import android.graphics.Point;
 import android.os.Parcel;

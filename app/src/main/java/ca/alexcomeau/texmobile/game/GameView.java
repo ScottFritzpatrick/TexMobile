@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.game;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,7 +12,9 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import ca.alexcomeau.texmobile.blocks.Block;
+import ca.alexcomeau.texmobile.R;
+import ca.alexcomeau.texmobile.activities.GameActivity;
+import ca.alexcomeau.texmobile.game.blocks.Block;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
@@ -103,7 +105,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceCreated(SurfaceHolder holder)
     {
         // Set up the thread when the surface is ready for it
-        thread = new GameThread(getHolder(), this);
+        thread = new GameThread(this);
         thread.setRunning(true);
         thread.start();
     }

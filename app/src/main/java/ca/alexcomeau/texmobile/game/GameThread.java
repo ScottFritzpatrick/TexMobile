@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.game;
 
 import android.graphics.Canvas;
 import android.util.Log;
@@ -11,20 +11,16 @@ public class GameThread extends Thread
     private final static int FRAME_PERIOD = 1000 / MAX_FPS;
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
-    private boolean running, firstRun;
+    private boolean running;
 
-    public GameThread(SurfaceHolder surfaceHolder, GameView gameView)
+    public GameThread(GameView gameView)
     {
         super();
-        this.surfaceHolder = surfaceHolder;
+        this.surfaceHolder = gameView.getHolder();
         this.gameView = gameView;
-        firstRun = true;
     }
 
-    public void setRunning(boolean running)
-    {
-        this.running = running;
-    }
+    public void setRunning(boolean running) { this.running = running; }
 
     public void run()
     {
@@ -84,17 +80,6 @@ public class GameThread extends Thread
             {
                 if(canvas != null)
                     surfaceHolder.unlockCanvasAndPost(canvas);
-            }
-
-            // Wait a second on the first run to let things display and the player prepare
-            if(firstRun)
-            {
-                try
-                {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) { return; }
-
-                firstRun = false;
             }
         }
     }

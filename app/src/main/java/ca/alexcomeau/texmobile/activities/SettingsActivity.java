@@ -1,4 +1,4 @@
-package ca.alexcomeau.texmobile;
+package ca.alexcomeau.texmobile.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,12 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import ca.alexcomeau.texmobile.R;
+
 public class SettingsActivity extends AppCompatActivity {
-    SeekBar seekMusic, seekSound;
-    TextView txtMusic, txtSound;
-    Spinner spnLevel;
+    private SeekBar seekMusic, seekSound;
+    private TextView txtMusic, txtSound;
+    private Spinner spnLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
