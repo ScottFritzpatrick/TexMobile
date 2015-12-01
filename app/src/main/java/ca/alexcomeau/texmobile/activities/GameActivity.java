@@ -116,10 +116,7 @@ public class GameActivity extends AppCompatActivity{
         mp.start();
     }
 
-    public void playSound(int i)
-    {
-        sp.play(soundEffects[i], volume, volume, 1, 0, 1.0f);
-    }
+    public void playSound(int i) { sp.play(soundEffects[i], volume, volume, 1, 0, 1.0f); }
 
     private void gameOver()
     {
@@ -181,14 +178,15 @@ public class GameActivity extends AppCompatActivity{
     protected void onPause()
     {
         mp.pause();
-        super.onPause();
         gameView.stop();
+        super.onPause();
     }
 
     @Override
     protected void onResume()
     {
         mp.start();
+        gameView.start();
         super.onResume();
     }
 
