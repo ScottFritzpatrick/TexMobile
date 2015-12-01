@@ -418,13 +418,13 @@ public class GameManager implements Parcelable {
             gravity = 4;
         else if(level < 230)
             gravity = 2;
-        else if(level < 300)
+        else if(level < 251)
             gravity = 1;
-        else if(level < 330)
+        else if(level < 300)
         {
             // Here, the pieces start dropping multiple rows per frame.
             gravity = 0;
-            superGravity = 2;
+            superGravity = 1;
 
             // This is one of the checkpoints for grandmaster rank. Score >= 12000, Time <= 4m15s
             if(check1)
@@ -439,6 +439,8 @@ public class GameManager implements Parcelable {
                 check1 = false;
             }
         }
+        else if(level < 330)
+            superGravity = 2;
         else if(level < 360)
             superGravity = 3;
         else if(level < 400)
