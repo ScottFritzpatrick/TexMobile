@@ -5,7 +5,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+
 import ca.alexcomeau.texmobile.game.blocks.*;
 
 public class GameManager implements Parcelable {
@@ -24,7 +27,7 @@ public class GameManager implements Parcelable {
     private int lineClearWait;
     private int elapsedFrames;
     private int soundEffectToPlay;
-    private String lastInput;
+    private List<String> lastInput;
     private LinkedList<Integer> history;
     private boolean grandmasterValid;
     private boolean check1;
@@ -32,6 +35,7 @@ public class GameManager implements Parcelable {
     private boolean check3;
     private boolean pieceRedraw;
     private boolean stackRedraw;
+    private boolean spawned;
     private Boolean gameOver;
 
     // Pieces drop every gravity frames, if gravity > 0.
@@ -76,7 +80,7 @@ public class GameManager implements Parcelable {
         fallWait = 0;
         soundEffectToPlay = -1;
         lineClearWait = LINE_CLEAR_DELAY;
-        lastInput = "";
+        lastInput = new ArrayList<>();
 
         // Start the history full of Zs.
         history = new LinkedList<>();
@@ -97,9 +101,9 @@ public class GameManager implements Parcelable {
     }
 
     // Move ahead a frame
-    public void advanceFrame(String input)
+    public void advanceFrame(List<String> in)
     {
-        boolean spawned = false;
+        spawned = false;
         pieceRedraw = false;
         stackRedraw = false;
         elapsedFrames++;
@@ -108,22 +112,38 @@ public class GameManager implements Parcelable {
             lineClearWait ++;
         else
         {
-            // Check if the received input is the same as last frame
-            if(input.equals(lastInput))
+            // Copy it over so we can mess with it without affecting the original
+            List<String> input = new ArrayList<>();
+            input.addAll(in);
+
+            // Check if any the received input is the same as last frame
+            if(!Collections.disjoint(input, lastInput))
             {
                 // If so, wait some frames before accepting it again to avoid unintentional doubled inputs
                 // This needs to be checked even if there's no piece so they can "charge" fast movement
-                if(autoShiftWait < AUTO_SHIFT_DELAY && !input.equals(""))
+                if(autoShiftWait < AUTO_SHIFT_DELAY && !input.isEmpty())
                 {
                     autoShiftWait++;
-                    input = "";
+                    input.clear();
                 }
+                else if(lastInput.contains("rotateRight") || lastInput.contains("rotateLeft"))
+                {
+                    // Rotating every frame is practically never desired
+                    input.remove("rotateRight");
+                    input.remove("rotateLeft");
+                }
+
+                // Update the last input, using the original because we might have removed some
+                lastInput.clear();
+                lastInput.addAll(in);
             }
             else
             {
-                lastInput = input;
+                lastInput.clear();
+                lastInput.addAll(input);
                 autoShiftWait = 0;
             }
+
             if(currentBlock == null)
             {
                 if(spawnWait++ >= SPAWN_DELAY)
@@ -144,38 +164,11 @@ public class GameManager implements Parcelable {
                         addLevel(1);
                 }
             }
+
             if(currentBlock != null)
             {
-                //When a piece spawns, the only acceptable moves are rotations
-                if(spawned)
-                    if(!(input.equals("rotateLeft") || input.equals("rotateRight")))
-                        input = "";
-
-                switch(input)
-                {
-                    case "left":
-                        moveLeft();
-                        break;
-                    case "right":
-                        moveRight();
-                        break;
-                    case "rotateLeft":
-                        rotateLeft();
-                        break;
-                    case "rotateRight":
-                        rotateRight();
-                        break;
-                    case "down":
-                    {
-                        // Make the piece fall or lock immediately
-                        lockWait = LOCK_DELAY;
-                        fallWait = gravity;
-                        droppedLines++;
-                        break;
-                    }
-                    default:
-                        break;
-                }
+                for(String s : input)
+                        handleInput(s);
 
                 // If the new block isn't in a valid location upon spawning (and rotating), the game is lost
                 if(spawned)
@@ -227,6 +220,40 @@ public class GameManager implements Parcelable {
     }
 
     // ===== Input handling methods ==========================================
+    private void handleInput(String input)
+    {
+        //When a piece spawns, the only acceptable moves are rotations
+        if(spawned)
+            if(!(input.equals("rotateLeft") || input.equals("rotateRight")))
+                input = "";
+
+        switch(input)
+        {
+            case "left":
+                moveLeft();
+                break;
+            case "right":
+                moveRight();
+                break;
+            case "rotateLeft":
+                rotateLeft();
+                break;
+            case "rotateRight":
+                rotateRight();
+                break;
+            case "down":
+            {
+                // Make the piece fall or lock immediately
+                lockWait = LOCK_DELAY;
+                fallWait = gravity;
+                droppedLines++;
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
     private void moveLeft()
     {
         if(gameBoard.checkLeft(currentBlock))

@@ -25,7 +25,7 @@ import ca.alexcomeau.texmobile.game.blocks.Block;
 
 public class GameActivity extends AppCompatActivity{
     private GameView gameView;
-    private String input;
+    private List<String> input;
     private MediaPlayer mp;
     private SoundPool sp;
     private int[] soundEffects;
@@ -40,7 +40,7 @@ public class GameActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        input = "";
+        input = new ArrayList<>();
         gameView = (GameView) findViewById(R.id.svBoard);
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtLevel = (TextView) findViewById(R.id.txtLevel);
@@ -90,13 +90,21 @@ public class GameActivity extends AppCompatActivity{
                 {
                     switch(event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            input = v.getTag().toString();
-                            if(gameView.getGame().getGameOver() != null)
+                        {
+                            String tag = v.getTag().toString();
+                            if(!input.contains(tag))
+                                input.add(tag);
+
+                            if (gameView.getGame().getGameOver() != null)
                                 gameOver();
+
                             return true;
+                        }
                         case MotionEvent.ACTION_UP:
-                            input = "";
+                        {
+                            input.remove(v.getTag().toString());
                             return true;
+                        }
                     }
                     return false;
                 }
@@ -168,7 +176,7 @@ public class GameActivity extends AppCompatActivity{
         }
     }
 
-    public String getInput() { return input; }
+    public List<String> getInput() { return input; }
 
     public void setNextPiece(byte id) { imgNext.setBackground(nextPieces[id]); }
     public void setScore(int score) { txtScore.setText(String.format(getString(R.string.score), score)); }
