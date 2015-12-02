@@ -116,33 +116,34 @@ public class GameManager implements Parcelable {
             List<String> input = new ArrayList<>();
             input.addAll(in);
 
+            if (lastInput.contains("rotateRight") || lastInput.contains("rotateLeft"))
+            {
+                // Rotating every frame is not desired
+                input.remove("rotateRight");
+                input.remove("rotateLeft");
+            }
+
             // Check if any the received input is the same as last frame
             if(!Collections.disjoint(input, lastInput))
             {
                 // If so, wait some frames before accepting it again to avoid unintentional doubled inputs
                 // This needs to be checked even if there's no piece so they can "charge" fast movement
-                if(autoShiftWait < AUTO_SHIFT_DELAY && !input.isEmpty())
+                if (autoShiftWait < AUTO_SHIFT_DELAY && !input.isEmpty())
                 {
+                    // Remove the movements -- rotations were handled previously
+                    input.remove("left");
+                    input.remove("right");
+                    input.remove("down");
                     autoShiftWait++;
-                    input.clear();
-                }
-                else if(lastInput.contains("rotateRight") || lastInput.contains("rotateLeft"))
-                {
-                    // Rotating every frame is practically never desired
-                    input.remove("rotateRight");
-                    input.remove("rotateLeft");
                 }
 
-                // Update the last input, using the original because we might have removed some
-                lastInput.clear();
-                lastInput.addAll(in);
             }
             else
-            {
-                lastInput.clear();
-                lastInput.addAll(input);
                 autoShiftWait = 0;
-            }
+
+            // Update the last input, using the original because we might have removed some
+            lastInput.clear();
+            lastInput.addAll(in);
 
             if(currentBlock == null)
             {
@@ -167,7 +168,16 @@ public class GameManager implements Parcelable {
 
             if(currentBlock != null)
             {
-                for(String s : input)
+                if(spawned)
+                {
+                    // Only allow rotations on spawn
+                    if(in.contains("rotateLeft"))
+                        handleInput("rotateLeft");
+                    if(in.contains("rotateRight"))
+                        handleInput("rotateLeft");
+                }
+                else
+                    for(String s : input)
                         if(s != null) handleInput(s);
 
                 // If the new block isn't in a valid location upon spawning (and rotating), the game is lost
@@ -222,11 +232,6 @@ public class GameManager implements Parcelable {
     // ===== Input handling methods ==========================================
     private void handleInput(String input)
     {
-        //When a piece spawns, the only acceptable moves are rotations
-        if(spawned)
-            if(!(input.equals("rotateLeft") || input.equals("rotateRight")))
-                input = "";
-
         switch(input)
         {
             case "left":
