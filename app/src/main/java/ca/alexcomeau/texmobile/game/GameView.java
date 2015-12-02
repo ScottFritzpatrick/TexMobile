@@ -104,10 +104,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
-        // Set up the thread when the surface is ready for it
-        thread = new GameThread(this);
-        thread.setRunning(true);
-        thread.start();
+        // Set up the thread when the surface is ready for it, if it hasn't been already
+        if(thread == null)
+        {
+            thread = new GameThread(this);
+            thread.setRunning(true);
+            thread.start();
+        }
     }
 
     @Override
@@ -125,6 +128,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                 retry = false;
             } catch (InterruptedException e) {}
         }
+        thread = null;
     }
 
     @Override
@@ -248,19 +252,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public GameManager getGame() { return game; }
-    public void stop() { if(thread != null) thread.setRunning(false); }
+    public void stop() {
+        if(thread != null)
+        {
+            thread.setRunning(false);
+        }
+    }
     public void start()
     {
         if(thread != null)
         {
             thread.setRunning(true);
-            if (thread.getState() == Thread.State.TERMINATED)
-            {
-                thread = null;
-                thread = new GameThread(this);
-                thread.setRunning(true);
-                thread.start();
-            }
+            //if (thread.getState() == Thread.State.TERMINATED)
+            //{
+            //    thread = null;
+            //    thread = new GameThread(this);
+            //    thread.setRunning(true);
+            //    thread.start();
+            //}
+        }
+        else
+        {
+            thread = new GameThread(this);
+            thread.setRunning(true);
+            thread.start();
         }
     }
     public boolean getRedraw() { return game.getPieceRedraw() || game.getStackRedraw(); }

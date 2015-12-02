@@ -83,9 +83,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:id="@+id/btnRotateLeft"
-                android:tag="rotateLeft"
-                android:text="rL"
+                android:id="@+id/btnMoveRight"
+                android:tag="right"
+                android:text="R"
                 style="?android:buttonBarButtonStyle"/>
             <Button
                 android:layout_width="0dp"
@@ -99,17 +99,17 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:id="@+id/btnRotateRight"
-                android:tag="rotateRight"
-                android:text="rR"
+                android:id="@+id/btnRotateLeft"
+                android:tag="rotateLeft"
+                android:text="rL"
                 style="?android:buttonBarButtonStyle"/>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:id="@+id/btnMoveRight"
-                android:tag="right"
-                android:text="R"
+                android:id="@+id/btnRotateRight"
+                android:tag="rotateRight"
+                android:text="rR"
                 style="?android:buttonBarButtonStyle"/>
             <Button
                 android:layout_width="0px"
