@@ -47,7 +47,7 @@ public class GameThread extends Thread
                 if(gameView.getRedraw()) canvas = surfaceHolder.lockCanvas();
                 synchronized(surfaceHolder)
                 {
-                    gameView.render(canvas);
+                    if(canvas != null) gameView.render(canvas);
 
                     // How long did that take?
                     timeDiff = System.currentTimeMillis() - beginTime;
