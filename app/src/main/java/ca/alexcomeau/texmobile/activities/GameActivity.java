@@ -10,7 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -75,15 +75,15 @@ public class GameActivity extends AppCompatActivity{
         nextPieces[Block.Z] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_z);
 
         // Wire up all the buttons
-        List<Button> btns = new ArrayList<>();
-        btns.add((Button) findViewById(R.id.btnDown2));
-        btns.add((Button) findViewById(R.id.btnDown));
-        btns.add((Button) findViewById(R.id.btnMoveLeft));
-        btns.add((Button) findViewById(R.id.btnMoveRight));
-        btns.add((Button) findViewById(R.id.btnRotateLeft));
-        btns.add((Button) findViewById(R.id.btnRotateRight));
+        List<ImageButton> btns = new ArrayList<>();
+        btns.add((ImageButton) findViewById(R.id.btnDown2));
+        btns.add((ImageButton) findViewById(R.id.btnDown));
+        btns.add((ImageButton) findViewById(R.id.btnMoveLeft));
+        btns.add((ImageButton) findViewById(R.id.btnMoveRight));
+        btns.add((ImageButton) findViewById(R.id.btnRotateLeft));
+        btns.add((ImageButton) findViewById(R.id.btnRotateRight));
 
-        for(Button b : btns)
+        for(ImageButton b : btns)
             b.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event)

@@ -3,40 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@android:style/Theme.NoTitleBar"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:background="#63d1ff">
 
     <LinearLayout
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/leftControls"
-        android:layout_alignParentStart="true"
-        style="?android:buttonBarStyle">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:id="@+id/btnRotateLeft"
-            android:tag="rotateLeft"
-            android:text="rL"
-            style="?android:buttonBarButtonStyle"/>
-
-        <Button
+        android:paddingBottom="4dp"
+        android:layout_alignParentStart="true">
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/btnMoveLeft"
             android:tag="left"
-            android:text="L"
+            android:src="@drawable/arrow_left"
+            android:background="@drawable/button"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/left"
             style="?android:buttonBarButtonStyle"/>
 
-        <Button
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/btnMoveRight"
+            android:tag="right"
+            android:src="@drawable/arrow_right"
+            android:background="@drawable/button"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/right"
+            style="?android:buttonBarButtonStyle"/>
+
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/btnDown2"
             android:tag="down"
-            android:text="D"
+            android:src="@drawable/arrow_down"
+            android:background="@drawable/button"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/down"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 
@@ -107,33 +117,42 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/rightControls"
-        android:layout_alignParentEnd="true"
-        style="?android:buttonBarStyle">
-        <Button
+        android:paddingBottom="4dp"
+        android:layout_alignParentEnd="true">
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/btnRotateLeft"
+            android:tag="rotateLeft"
+            android:src="@drawable/rotate_left"
+            android:background="@drawable/button"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/left"
+            style="?android:buttonBarButtonStyle"/>
+
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/btnRotateRight"
             android:tag="rotateRight"
-            android:text="rR"
+            android:src="@drawable/rotate_right"
+            android:background="@drawable/button"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/rotateRight"
             style="?android:buttonBarButtonStyle"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:id="@+id/btnMoveRight"
-            android:tag="right"
-            android:text="R"
-            style="?android:buttonBarButtonStyle"/>
-
-        <Button
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/btnDown"
             android:tag="down"
-            android:text="D"
+            android:src="@drawable/arrow_down"
+            android:background="@drawable/button"
+            android:layout_margin="3dp"
+            android:contentDescription="@string/down"
             style="?android:buttonBarButtonStyle"/>
     </LinearLayout>
 

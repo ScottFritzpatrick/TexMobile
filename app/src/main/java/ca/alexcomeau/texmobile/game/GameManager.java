@@ -168,7 +168,7 @@ public class GameManager implements Parcelable {
             if(currentBlock != null)
             {
                 for(String s : input)
-                        handleInput(s);
+                        if(s != null) handleInput(s);
 
                 // If the new block isn't in a valid location upon spawning (and rotating), the game is lost
                 if(spawned)

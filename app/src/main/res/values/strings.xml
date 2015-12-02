@@ -23,6 +23,11 @@
     <string name="next">Next Block</string>
     <string name="gameover">Game Over!</string>
     <string name="pressAny">Press Any Button!</string>
+    <string name="down">Move Down Button</string>
+    <string name="left">Move Left Button</string>
+    <string name="right">Move Right Button</string>
+    <string name="rotateLeft">Rotate Left Button</string>
+    <string name="rotateRight">Rotate Right Button</string>
 
     <string name="enter_name">New High Score</string>
     <string name="congrats">Congratulations!</string>

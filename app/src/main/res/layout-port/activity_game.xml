@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@android:style/Theme.NoTitleBar">
+    android:theme="@android:style/Theme.NoTitleBar"
+    android:background="#63d1ff">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -69,49 +70,63 @@
         android:id="@+id/controls"
         android:orientation="horizontal"
         android:layout_marginTop="3dp"
-        style="?android:buttonBarStyle"
         android:layout_alignParentBottom="true">
-            <Button
+            <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/btnMoveLeft"
                 android:tag="left"
-                android:text="L"
+                android:src="@drawable/arrow_left"
+                android:background="@drawable/button"
+                android:layout_margin="2dp"
+                android:contentDescription="@string/left"
                 style="?android:buttonBarButtonStyle"/>
-            <Button
+            <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/btnMoveRight"
                 android:tag="right"
-                android:text="R"
+                android:src="@drawable/arrow_right"
+                android:background="@drawable/button"
+                android:layout_margin="2dp"
+                android:contentDescription="@string/right"
                 style="?android:buttonBarButtonStyle"/>
-            <Button
+            <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:tag="down"
-                android:text="D"
                 android:id="@+id/btnDown"
+                android:src="@drawable/arrow_down"
+                android:background="@drawable/button"
+                android:layout_margin="2dp"
+                android:contentDescription="@string/down"
                 style="?android:buttonBarButtonStyle"/>
-            <Button
+            <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/btnRotateLeft"
                 android:tag="rotateLeft"
-                android:text="rL"
+                android:src="@drawable/rotate_left"
+                android:background="@drawable/button"
+                android:layout_margin="2dp"
+                android:contentDescription="@string/rotateLeft"
                 style="?android:buttonBarButtonStyle"/>
-            <Button
+            <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/btnRotateRight"
                 android:tag="rotateRight"
-                android:text="rR"
+                android:src="@drawable/rotate_right"
+                android:background="@drawable/button"
+                android:layout_margin="2dp"
+                android:contentDescription="@string/rotateRight"
                 style="?android:buttonBarButtonStyle"/>
-            <Button
+            <ImageButton
                 android:layout_width="0px"
                 android:layout_height="0px"
                 android:id="@+id/btnDown2"/>
