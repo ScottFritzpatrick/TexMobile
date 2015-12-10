@@ -47,6 +47,8 @@ public class GameManager implements Parcelable {
     private final int LOCK_DELAY = 15;
     // Where pieces spawn
     private final Point START = new Point(3,17);
+    // Number of different block shapes
+    private final int SHAPES_COUNT = Block.Shape.values().length;
     // Pieces are spawned SPAWN_DELAY frames after a piece is locked.
     private final int SPAWN_DELAY = 15;
     // Frames to wait before allowing consecutive duplicate inputs. Too low and they get accidentally doubled
@@ -390,13 +392,13 @@ public class GameManager implements Parcelable {
 
     private Block generateNewBlock()
     {
-        int i = (int)(Math.random() * 7);
+        int i = (int)(Math.random() * SHAPES_COUNT);
         int j = 0;
 
         // Generate a new number until there's one that's not in the history, or the limit is reached
         while(history.contains(i) && j < GENERATION_TRIES)
         {
-            i = (int)(Math.random() * 7);
+            i = (int)(Math.random() * SHAPES_COUNT);
             j++;
         }
 

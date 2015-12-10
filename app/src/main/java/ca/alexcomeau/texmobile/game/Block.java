@@ -8,8 +8,6 @@ public class Block implements Parcelable {
     private int rotation;
     private Point position;
     private Shape shape;
-    // Nested arrays should be based on a 4x4 grid. Points need to be in descending order based on y.
-    private Point[][] rotations;
 
     // Block types
     public enum Shape{
@@ -70,7 +68,6 @@ public class Block implements Parcelable {
         rotation = 0;
         position = new Point(start);
         this.shape = shape;
-        rotations = shape.getRotations();
     }
 
     public void moveUp() { position.y++; }
@@ -82,7 +79,7 @@ public class Block implements Parcelable {
     public void rotateRight()
     {
         rotation++;
-        if(rotation == rotations.length)
+        if(rotation == shape.getRotations().length)
             rotation = 0;
     }
 
@@ -91,7 +88,7 @@ public class Block implements Parcelable {
     {
         rotation--;
         if(rotation == -1)
-            rotation = rotations.length - 1;
+            rotation = shape.getRotations().length - 1;
     }
 
     // Adds the position to the current relative coordinates and returns that.
@@ -108,14 +105,13 @@ public class Block implements Parcelable {
 
     public Shape getShape() { return shape; }
     public Point getPosition() { return position; }
-    public Point[] getRelativeCoordinates() { return rotations[rotation]; }
+    public Point[] getRelativeCoordinates() { return shape.getRotations()[rotation]; }
 
     // ===== Parcelable Stuff ====================================================
     protected Block(Parcel in) {
         rotation = in.readInt();
         position = (Point) in.readValue(Point.class.getClassLoader());
         shape = (Shape) in.readSerializable();
-        rotations = shape.getRotations();
     }
 
     @Override
