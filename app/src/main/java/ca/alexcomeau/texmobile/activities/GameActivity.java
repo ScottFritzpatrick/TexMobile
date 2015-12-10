@@ -92,6 +92,7 @@ public class GameActivity extends AppCompatActivity{
                     switch(event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                         {
+                            v.setPressed(true);
                             String tag = v.getTag().toString();
                             if(!input.contains(tag))
                                 input.add(tag);
@@ -103,6 +104,7 @@ public class GameActivity extends AppCompatActivity{
                         }
                         case MotionEvent.ACTION_UP:
                         {
+                            v.setPressed(false);
                             input.remove(v.getTag().toString());
                             return true;
                         }
