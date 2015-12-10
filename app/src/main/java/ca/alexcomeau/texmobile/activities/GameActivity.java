@@ -15,13 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import ca.alexcomeau.texmobile.game.GameManager;
 import ca.alexcomeau.texmobile.game.GameView;
 import ca.alexcomeau.texmobile.R;
 import ca.alexcomeau.texmobile.db.ScoreDBManager;
-import ca.alexcomeau.texmobile.game.blocks.Block;
+import ca.alexcomeau.texmobile.game.Block;
 
 public class GameActivity extends AppCompatActivity{
     private GameView gameView;
@@ -33,7 +34,7 @@ public class GameActivity extends AppCompatActivity{
     private ImageView imgNext;
     private TextView txtScore;
     private TextView txtLevel;
-    private NinePatchDrawable[] nextPieces;
+    private Hashtable<Block.Shape, NinePatchDrawable> nextPieces;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,14 +66,14 @@ public class GameActivity extends AppCompatActivity{
         volume = getSharedPreferences("volume", 0).getInt("sound", 100) / 100.0f;
 
         // Get all the drawables
-        nextPieces = new NinePatchDrawable[8];
-        nextPieces[Block.I] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_i);
-        nextPieces[Block.J] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_j);
-        nextPieces[Block.L] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_l);
-        nextPieces[Block.O] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_o);
-        nextPieces[Block.S] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_s);
-        nextPieces[Block.T] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_t);
-        nextPieces[Block.Z] = (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_z);
+        nextPieces = new Hashtable<>();
+        nextPieces.put(Block.Shape.I, (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_i));
+        nextPieces.put(Block.Shape.J, (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_j));
+        nextPieces.put(Block.Shape.L, (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_l));
+        nextPieces.put(Block.Shape.O, (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_o));
+        nextPieces.put(Block.Shape.S, (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_s));
+        nextPieces.put(Block.Shape.T, (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_t));
+        nextPieces.put(Block.Shape.Z, (NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.next_piece_z));
 
         // Wire up all the buttons
         List<ImageButton> btns = new ArrayList<>();
@@ -178,7 +179,7 @@ public class GameActivity extends AppCompatActivity{
 
     public List<String> getInput() { return input; }
 
-    public void setNextPiece(byte id) { imgNext.setBackground(nextPieces[id]); }
+    public void setNextPiece(Block.Shape shape) { imgNext.setBackground(nextPieces.get(shape)); }
     public void setScore(int score) { txtScore.setText(String.format(getString(R.string.score), score)); }
     public void setLevel(int curr, int last) { txtLevel.setText(String.format(getString(R.string.level), curr, last)); }
 

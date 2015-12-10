@@ -6,21 +6,14 @@ import android.os.Parcelable;
 
 import java.util.Arrays;
 
-import ca.alexcomeau.texmobile.game.blocks.Block;
-
 
 public class Board implements Parcelable {
-    private byte[][] stack;
+    private Block.Shape[][] stack;
 
     public Board()
     {
         // [Y][X] -- makes things a lot easier
-        stack = new byte[22][10];
-
-        // Initialize as blank
-        for(int i = 0; i < 22; i++)
-            for(int j = 0; j < 10; j++)
-                stack[i][j] = 0;
+        stack = new Block.Shape[22][10];
     }
 
     // Checks whether the block is currently in a legal position.
@@ -32,7 +25,7 @@ public class Board implements Parcelable {
         {
             if(c.y < 0 || c.x < 0 || c.x >= stack[0].length)
                 return false;
-            if (stack[c.y][c.x] != 0)
+            if (stack[c.y][c.x] != null)
                 return false;
         }
         return true;
@@ -91,10 +84,10 @@ public class Board implements Parcelable {
     // Returns whether the specified line is filled, and thus can be cleared.
     public boolean checkLine(int line)
     {
-        for(int col : stack[line])
+        for(Block.Shape col : stack[line])
         {
             // Check each cell in the specified row. If 0 is found, that means there is an empty cell.
-            if (col == 0)
+            if (col == null)
                 return false;
         }
         return true;
@@ -115,16 +108,16 @@ public class Board implements Parcelable {
     {
         // Color in the places the block is over
         for(Point c : block.getAbsoluteCoordinates())
-            stack[c.y][c.x] = block.getBlockID();
+            stack[c.y][c.x] = block.getShape();
     }
 
-    public byte[][] getStack() { return stack; }
+    public Block.Shape[][] getStack() { return stack; }
 
     public boolean equals(Board other) { return Arrays.equals(stack, other.getStack()); }
 
     // ===== Parcelable Stuff ============================
     protected Board(Parcel in) {
-        stack = (byte[][]) in.readSerializable();
+        stack = (Block.Shape[][]) in.readSerializable();
     }
 
     @Override

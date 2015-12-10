@@ -12,9 +12,10 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Hashtable;
+
 import ca.alexcomeau.texmobile.R;
 import ca.alexcomeau.texmobile.activities.GameActivity;
-import ca.alexcomeau.texmobile.game.blocks.Block;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
@@ -24,7 +25,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     private GameActivity activity;
     private int rectWidth;
     private boolean gameStarted;
-    private NinePatchDrawable[] htShapes;
+    private Hashtable<Block.Shape, NinePatchDrawable> htShapes;
     private Bitmap stackState;
 
     public GameView(Context ctx, AttributeSet attrs)
@@ -88,16 +89,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
         gameStarted = true;
 
-        htShapes = new NinePatchDrawable[8];
+        htShapes = new Hashtable<>();
 
-        // Get all the drawables and associate them with the IDs
-        htShapes[Block.I] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_red);
-        htShapes[Block.J] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_blue);
-        htShapes[Block.L] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_orange);
-        htShapes[Block.O] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_yellow);
-        htShapes[Block.S] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_magenta);
-        htShapes[Block.T] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_cyan);
-        htShapes[Block.Z] = (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_green);
+        // Get all the drawables and associate them with the shapes
+        htShapes.put(Block.Shape.I, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_red));
+        htShapes.put(Block.Shape.J, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_blue));
+        htShapes.put(Block.Shape.L, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_orange));
+        htShapes.put(Block.Shape.O, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_yellow));
+        htShapes.put(Block.Shape.S, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_magenta));
+        htShapes.put(Block.Shape.T, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_cyan));
+        htShapes.put(Block.Shape.Z, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_green));
     }
 
 
@@ -173,15 +174,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                     Canvas stack = new Canvas(stackState);
                     stack.drawColor(Color.BLACK);
 
-                    byte[][] colors = game.getStack();
+                    Block.Shape[][] colors = game.getStack();
 
                     // Paint the stack onto the canvas (and therefore onto the bitmap. Top two rows aren't drawn.
                     for(int i = 0; i <= 20; i++)
                         for(int j = 0; j < 10; j++)
                             // The canvas is already black so we don't have to draw that.
-                            if(colors[i][j] != 0)
+                            if(colors[i][j] != null)
                             {
-                                tile = htShapes[colors[i][j]];
+                                tile = htShapes.get(colors[i][j]);
                                 tile.setBounds(j * rectWidth,
                                         (20 - i) * rectWidth - rectWidth,
                                         j * rectWidth + rectWidth,
@@ -213,7 +214,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                     {
                         activity.setScore(game.getScore());
                         activity.setLevel(game.getLevel(), game.getMaxLevel());
-                        activity.setNextPiece(game.getNextBlock().getBlockID());
+                        activity.setNextPiece(game.getNextBlock().getShape());
                     }
                 });
             }
@@ -240,7 +241,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     private void drawBlock(Block block, Canvas canvas)
     {
-        NinePatchDrawable tile = htShapes[block.getBlockID()];
+        NinePatchDrawable tile = htShapes.get(block.getShape());
         for (Point coord : block.getAbsoluteCoordinates())
         {
             tile.setBounds(coord.x * rectWidth,

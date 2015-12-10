@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import ca.alexcomeau.texmobile.game.blocks.*;
-
 public class GameManager implements Parcelable {
     private Block currentBlock;
     private Block nextBlock;
@@ -283,7 +281,7 @@ public class GameManager implements Parcelable {
             currentBlock.rotateLeft();
             pieceRedraw = true;
         }
-        else if (currentBlock.getBlockID() != Block.I) // I blocks can't wall kick
+        else if (currentBlock.getShape() != Block.Shape.I) // I blocks can't wall kick
         {
             // See if the rotation would be valid if the block was tapped to the side (wall kick)
             currentBlock.moveRight();
@@ -307,7 +305,7 @@ public class GameManager implements Parcelable {
             currentBlock.rotateRight();
             pieceRedraw = true;
         }
-        else if (currentBlock.getBlockID() != Block.I) // I blocks can't wall kick
+        else if (currentBlock.getShape() != Block.Shape.I) // I blocks can't wall kick
         {
             // See if the rotation would be valid if the block was tapped to the side (wall kick)
             currentBlock.moveLeft();
@@ -387,23 +385,7 @@ public class GameManager implements Parcelable {
         history.remove();
         history.add(i);
 
-        switch(i)
-        {
-            case 0:
-                return new BlockI(START);
-            case 1:
-                return new BlockJ(START);
-            case 2:
-                return new BlockL(START);
-            case 3:
-                return new BlockT(START);
-            case 4:
-                return new BlockS(START);
-            case 5:
-                return new BlockO(START);
-            default:
-                return new BlockZ(START);
-        }
+        return new Block(START, Block.Shape.values()[i]);
     }
 
     private Block generateNewBlock()
@@ -543,7 +525,7 @@ public class GameManager implements Parcelable {
             return "S9";
     }
 
-    public byte[][] getStack() { return gameBoard.getStack(); }
+    public Block.Shape[][] getStack() { return gameBoard.getStack(); }
     public int getLevel() { return level; }
     public int getMaxLevel() { return maxLevel; }
     public int getScore() { return score; }

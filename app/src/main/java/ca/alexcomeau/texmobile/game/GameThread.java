@@ -1,7 +1,6 @@
 package ca.alexcomeau.texmobile.game;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class GameThread extends Thread
