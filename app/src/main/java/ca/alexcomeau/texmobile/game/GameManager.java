@@ -26,7 +26,7 @@ public class GameManager implements Parcelable {
     private int elapsedFrames;
     private int soundEffectToPlay;
     private List<String> lastInput;
-    private LinkedList<Integer> history;
+    private LinkedList<Block.Shape> history;
     private boolean grandmasterValid;
     private boolean check1;
     private boolean check2;
@@ -67,6 +67,8 @@ public class GameManager implements Parcelable {
         gameBoard = new Board();
         score = 0;
         level = 0;
+        gravity = 0;
+        superGravity = 0;
         maxLevel = levelEnd;
         addLevel(levelStart);
         combo = 1;
@@ -84,10 +86,10 @@ public class GameManager implements Parcelable {
 
         // Start the history full of Zs.
         history = new LinkedList<>();
-        history.add(6);
-        history.add(6);
-        history.add(6);
-        history.add(6);
+        history.add(Block.Shape.Z);
+        history.add(Block.Shape.Z);
+        history.add(Block.Shape.Z);
+        history.add(Block.Shape.Z);
 
         // Don't generate an O, S, or Z as the first piece
         currentBlock = generateNewBlock((int)(Math.random() * 4));
@@ -104,8 +106,6 @@ public class GameManager implements Parcelable {
     public void advanceFrame(List<String> in)
     {
         spawned = false;
-        pieceRedraw = false;
-        stackRedraw = false;
         elapsedFrames++;
 
         if(lineClearWait < LINE_CLEAR_DELAY)
@@ -329,7 +329,7 @@ public class GameManager implements Parcelable {
     {
         int linesCleared = 0;
 
-        // Get all the unique rows the block is spanning
+        // This only works because the shape rotations are in descending order. Check each row once
         ArrayList<Integer> toCheck = new ArrayList<>();
         for(Point c : currentBlock.getAbsoluteCoordinates())
             if (!toCheck.contains(c.y))
@@ -342,7 +342,6 @@ public class GameManager implements Parcelable {
                 }
             }
 
-
         if(linesCleared > 0)
         {
             // Multiplier for clearing the whole screen
@@ -353,7 +352,7 @@ public class GameManager implements Parcelable {
                     * linesCleared * ((linesCleared * 2) - 1)
                     * combo * bravo;
 
-            // They only combo if they clear more than one line
+            // Add to the combo
             combo += (linesCleared * 2) - 2;
 
             addLevel(linesCleared);
@@ -383,11 +382,13 @@ public class GameManager implements Parcelable {
     // Generates a block of a random type.
     private Block generateNewBlock(int i)
     {
+        Block.Shape result = Block.Shape.values()[i];
+
         // Take out the oldest element of history and add in this one
         history.remove();
-        history.add(i);
+        history.add(result);
 
-        return new Block(START, Block.Shape.values()[i]);
+        return new Block(START, result);
     }
 
     private Block generateNewBlock()
@@ -396,7 +397,7 @@ public class GameManager implements Parcelable {
         int j = 0;
 
         // Generate a new number until there's one that's not in the history, or the limit is reached
-        while(history.contains(i) && j < GENERATION_TRIES)
+        while(history.contains(Block.Shape.values()[i]) && j < GENERATION_TRIES)
         {
             i = (int)(Math.random() * SHAPES_COUNT);
             j++;
@@ -541,6 +542,7 @@ public class GameManager implements Parcelable {
     public Block getLastBlock() { return lastBlock; }
     public void clearLastBlock() { lastBlock = null; }
     public void clearSoundEffect() { soundEffectToPlay = -1; }
+    public void clearRedraw() { pieceRedraw = false; stackRedraw = false;}
 
     // ===== Parcelable Stuff ============================================
     protected GameManager(Parcel in) {

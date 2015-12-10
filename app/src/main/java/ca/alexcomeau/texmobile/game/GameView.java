@@ -101,7 +101,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         htShapes.put(Block.Shape.Z, (NinePatchDrawable) ContextCompat.getDrawable(activity.getBaseContext(), R.drawable.block_green));
     }
 
-
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
@@ -165,7 +164,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                 }
 
                 NinePatchDrawable tile;
-                canvas.drawColor(Color.BLACK);
                 Block lastBlock = game.getLastBlock();
 
                 if(game.getStackRedraw() || sizeChanged)
@@ -217,6 +215,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                         activity.setNextPiece(game.getNextBlock().getShape());
                     }
                 });
+
+                // Tell the game we drew it
+                game.clearRedraw();
             }
 
             if(game.getGameOver() != null)
@@ -264,13 +265,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         if(thread != null)
         {
             thread.setRunning(true);
-            //if (thread.getState() == Thread.State.TERMINATED)
-            //{
-            //    thread = null;
-            //    thread = new GameThread(this);
-            //    thread.setRunning(true);
-            //    thread.start();
-            //}
         }
         else
         {

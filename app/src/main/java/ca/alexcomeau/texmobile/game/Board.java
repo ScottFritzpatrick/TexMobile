@@ -86,7 +86,7 @@ public class Board implements Parcelable {
     {
         for(Block.Shape col : stack[line])
         {
-            // Check each cell in the specified row. If 0 is found, that means there is an empty cell.
+            // Check each cell in the specified row for null values
             if (col == null)
                 return false;
         }
@@ -113,7 +113,16 @@ public class Board implements Parcelable {
 
     public Block.Shape[][] getStack() { return stack; }
 
-    public boolean equals(Board other) { return Arrays.equals(stack, other.getStack()); }
+    public boolean equals(Board other)
+    {
+        // If any of the rows aren't the same, the stacks aren't the same
+        for(int i = 0; i < stack.length; i++)
+        {
+            if(!Arrays.equals(stack[i], other.getStack()[i]))
+                return false;
+        }
+        return true;
+    }
 
     // ===== Parcelable Stuff ============================
     protected Board(Parcel in) {
