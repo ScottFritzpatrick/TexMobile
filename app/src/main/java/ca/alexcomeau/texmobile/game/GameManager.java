@@ -174,7 +174,7 @@ public class GameManager implements Parcelable {
                     if(in.contains("rotateLeft"))
                         handleInput("rotateLeft");
                     if(in.contains("rotateRight"))
-                        handleInput("rotateLeft");
+                        handleInput("rotateRight");
                 }
                 else
                     for(String s : input)
